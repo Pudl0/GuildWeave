@@ -1,0 +1,56 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+  <!-- Officer panel shell. Backdrop, text, scripts, and tab content set in Lua. -->
+  <Frame name="GuildWeaveOfficerPanel" inherits="BackdropTemplate"
+         frameStrata="DIALOG" movable="true" enableMouse="true" hidden="true">
+    <Size x="420" y="340"/>
+    <Anchors>
+      <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER"/>
+    </Anchors>
+    <Layers>
+      <Layer level="OVERLAY">
+        <FontString name="$parentTitle" inherits="GameFontNormalLarge">
+          <Anchors>
+            <Anchor point="TOP" relativePoint="TOP" x="0" y="-12"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Button name="$parentCloseBtn" inherits="UIPanelCloseButton">
+        <Size x="20" y="20"/>
+        <Anchors>
+          <Anchor point="TOPRIGHT" relativePoint="TOPRIGHT" x="-2" y="-2"/>
+        </Anchors>
+      </Button>
+      <Button name="$parentTabRules" inherits="UIPanelButtonTemplate">
+        <Size x="130" y="28"/>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="10" y="-40"/>
+        </Anchors>
+      </Button>
+      <Button name="$parentTabInactive" inherits="UIPanelButtonTemplate">
+        <Size x="130" y="28"/>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="150" y="-40"/>
+        </Anchors>
+      </Button>
+      <!-- Content containers for each tab, positioned below the tab buttons. -->
+      <Frame name="$parentRulesContent">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="10" y="-72"/>
+          <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-10" y="10"/>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentInactiveContent">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="10" y="-72"/>
+          <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-10" y="10"/>
+        </Anchors>
+      </Frame>
+    </Frames>
+  </Frame>
+
+</Ui>

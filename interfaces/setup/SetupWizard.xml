@@ -1,0 +1,110 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+  <!-- Setup wizard shell. Backdrop, text content, and scripts are set in Lua. -->
+  <Frame name="GuildWeaveSetupWizard" inherits="BackdropTemplate"
+         frameStrata="DIALOG" movable="true" enableMouse="true" hidden="true">
+    <Size x="460" y="420"/>
+    <Anchors>
+      <Anchor point="CENTER" relativeTo="UIParent" relativePoint="CENTER"/>
+    </Anchors>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture name="$parentLogo"
+                 file="Interface\AddOns\GuildWeave\media\graphics\GuildLogo.tga">
+          <Size x="64" y="64"/>
+          <Anchors>
+            <Anchor point="TOP" relativePoint="TOP" x="0" y="-16"/>
+          </Anchors>
+        </Texture>
+        <Texture name="$parentDivTop">
+          <Size x="420" y="1"/>
+          <Color r="0.3" g="0.3" b="0.3" a="0.8"/>
+        </Texture>
+        <Texture name="$parentDivBot">
+          <Size x="420" y="1"/>
+          <Anchors>
+            <Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="52"/>
+          </Anchors>
+          <Color r="0.3" g="0.3" b="0.3" a="0.8"/>
+        </Texture>
+      </Layer>
+      <Layer level="OVERLAY">
+        <FontString name="$parentTitle" inherits="GameFontNormalLarge">
+          <Anchors>
+            <Anchor point="TOP" relativeTo="$parentLogo" relativePoint="BOTTOM" x="0" y="-8"/>
+          </Anchors>
+        </FontString>
+        <FontString name="$parentStepLabel" inherits="GameFontNormalSmall">
+          <!-- Anchored in Lua after DotContainer is positioned. -->
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <!-- Progress dots: 5 colored squares. Size and colors updated in Lua. -->
+      <Frame name="$parentDotContainer">
+        <Size x="92" y="12"/>
+        <Anchors>
+          <Anchor point="TOP" relativeTo="$parentTitle" relativePoint="BOTTOM" x="0" y="-12"/>
+        </Anchors>
+        <Layers>
+          <Layer level="OVERLAY">
+            <Texture name="$parentDot1">
+              <Size x="12" y="12"/>
+              <Anchors>
+                <Anchor point="LEFT" relativePoint="LEFT" x="0" y="0"/>
+              </Anchors>
+              <Color r="0.3" g="0.3" b="0.3" a="1"/>
+            </Texture>
+            <Texture name="$parentDot2">
+              <Size x="12" y="12"/>
+              <Anchors>
+                <Anchor point="LEFT" relativePoint="LEFT" x="20" y="0"/>
+              </Anchors>
+              <Color r="0.3" g="0.3" b="0.3" a="1"/>
+            </Texture>
+            <Texture name="$parentDot3">
+              <Size x="12" y="12"/>
+              <Anchors>
+                <Anchor point="LEFT" relativePoint="LEFT" x="40" y="0"/>
+              </Anchors>
+              <Color r="0.3" g="0.3" b="0.3" a="1"/>
+            </Texture>
+            <Texture name="$parentDot4">
+              <Size x="12" y="12"/>
+              <Anchors>
+                <Anchor point="LEFT" relativePoint="LEFT" x="60" y="0"/>
+              </Anchors>
+              <Color r="0.3" g="0.3" b="0.3" a="1"/>
+            </Texture>
+            <Texture name="$parentDot5">
+              <Size x="12" y="12"/>
+              <Anchors>
+                <Anchor point="LEFT" relativePoint="LEFT" x="80" y="0"/>
+              </Anchors>
+              <Color r="0.3" g="0.3" b="0.3" a="1"/>
+            </Texture>
+          </Layer>
+        </Layers>
+      </Frame>
+      <!-- Invisible anchor frame for step content. Step renderers attach widgets here. -->
+      <Frame name="$parentContentAnchor">
+        <Size x="420" y="1"/>
+      </Frame>
+      <Button name="$parentBackBtn" inherits="UIPanelButtonTemplate">
+        <Size x="90" y="26"/>
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" relativePoint="BOTTOMLEFT" x="20" y="16"/>
+        </Anchors>
+      </Button>
+      <Button name="$parentNextBtn" inherits="UIPanelButtonTemplate">
+        <Size x="90" y="26"/>
+        <Anchors>
+          <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-20" y="16"/>
+        </Anchors>
+      </Button>
+    </Frames>
+  </Frame>
+
+</Ui>

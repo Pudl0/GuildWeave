@@ -1,0 +1,55 @@
+## Interface: 20505
+## Title: GuildWeave
+## Notes: A configurable guild management addon for WoW Classic TBC.
+## Author: Pudi
+## Version: 1.0.0
+## IconTexture: Interface\AddOns\GuildWeave\media\graphics\GuildLogo.tga
+## SavedVariablesPerCharacter: CharacterDeaths, GuildWeaveDB, GuildWeaveOwnProfile
+## SavedVariables: DiscordHandle, Pronouns, GuildWeaveProfileCache
+
+# External library dependencies
+## OptionalDeps: LibStub, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0
+libs\LibStub\LibStub.lua
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+libs\libdatabroker-1-1\LibDataBroker-1.1.lua
+libs\LibDBIcon-1.0\LibDBIcon-1.0\LibDBIcon-1.0.lua
+libs\AceGUI-3.0\AceGUI-3.0.xml
+libs\AceConfig-3.0\AceConfig-3.0.xml
+
+# Addon lua files
+Config.lua
+Locales/enUS.lua
+Locales/deDE.lua
+Global.lua
+Constants.lua
+MiniMapIcon.lua
+EventManager.lua
+GuildCache.lua
+GuildProfiles.lua
+Tooltip.lua
+Debug.lua
+Options.lua
+Rules.lua
+LevelUp.lua
+MailHandler.lua
+AnnouncementQueue.lua
+interfaces\popups\GenericPopup.xml
+interfaces\popups\GenericPopup.lua
+interfaces\announcements\NotificationFrames.xml
+interfaces\announcements\DeathAnnouncement.lua
+interfaces\announcements\LevelUpAnnouncement.lua
+interfaces\announcements\PvPAnnouncement.lua
+interfaces\deathlog\Deathlog.xml
+interfaces\deathlog\Deathlog.lua
+interfaces\setup\SetupWizard.xml
+interfaces\setup\ProfileDataHandler.lua
+interfaces\setup\SetupWizard.lua
+interfaces\officer\OfficerPanel.xml
+interfaces\officer\InactivityWindow.xml
+interfaces\officer\OfficerData.lua
+interfaces\officer\InactivityWindow.lua
+interfaces\officer\OfficerPanel.lua
+interfaces\guildpanel\GuildPanel.xml
+interfaces\guildpanel\GuildPanel.lua
+Death.lua
+Main.lua
