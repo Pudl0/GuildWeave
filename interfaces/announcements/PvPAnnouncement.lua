@@ -34,15 +34,16 @@ function GuildWeave.PvPAnnouncement:CheckTargetPvP()
     local unit = "target"
     if not UnitExists(unit) or not UnitIsPVP(unit) then return end
 
-    local targetFaction = UnitFactionGroup(unit)
     local name = UnitName(unit) or Localization["DEATH_UNKNOWN"]
 
-    if targetFaction == "Alliance" and not UnitIsPlayer(unit) then
-        GuildWeave.PvPAnnouncement:ShowWarning(name .. " (Alliance NPC)")
+    if not UnitIsPlayer(unit) then
+        local playerFaction = UnitFactionGroup("player")
+        local targetFaction = UnitFactionGroup(unit)
+        if targetFaction and targetFaction ~= playerFaction then
+            GuildWeave.PvPAnnouncement:ShowWarning(name .. " (" .. targetFaction .. " NPC)")
+        end
         return
     end
-
-    if not UnitIsPlayer(unit) then return end
 
     local now = GetTime()
     local lastAlert = GuildWeave.lastPvPAlert[name] or 0
