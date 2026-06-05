@@ -15,7 +15,8 @@ end
 -- ── Frame wiring ──────────────────────────────────────────────────────────────
 
 local function BuildPanel()
-    local f = GuildWeaveOfficerPanel
+    local f       = GuildWeaveOfficerPanel
+    local officer = IsOfficer()
 
     f:SetBackdrop(GuildWeave.Constants.BACKDROP)
     f:SetBackdropColor(0.05, 0.05, 0.05, 0.97)
@@ -43,7 +44,11 @@ local function BuildPanel()
     }
 
     tabBtns.rules:SetText("Rules")
-    tabBtns.inactive:SetText("Inactive Members")
+    if officer then
+        tabBtns.inactive:SetText("Inactive Members")
+    else
+        tabBtns.inactive:Hide()
+    end
 
     local function SwitchTab(id)
         currentTab = id
@@ -54,8 +59,7 @@ local function BuildPanel()
     end
 
     -- ── Rules tab content ──────────────────────────────────────────────────
-    local rc      = tabContents["rules"]
-    local officer = IsOfficer()
+    local rc = tabContents["rules"]
 
     local ruleDefs = {
         { label = "Block mailbox usage",             dbKey = "mailRule" },
