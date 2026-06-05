@@ -17,7 +17,9 @@ if LDB then
                     GuildWeave.GuildPanel:Toggle()
                 end
             elseif button == "RightButton" then
-                GuildWeave.OfficerPanel:Toggle()
+                if IsInGuild() then
+                    GuildWeave.OfficerPanel:Toggle()
+                end
             end
         end,
         OnEnter = function(selfFrame)
@@ -26,7 +28,9 @@ if LDB then
             GameTooltip:AddLine("Version: " .. (GuildWeave.version or "Unknown"), 1, 1, 1)
             GameTooltip:AddLine("Left-click: Show guild panel", 1, 1, 1)
             GameTooltip:AddLine("Shift+Left-click: Show death log", 0.8, 0.8, 0.8)
-            GameTooltip:AddLine("Right-click: Officer panel", 0.8, 0.8, 0.8)
+            if IsInGuild() then
+                GameTooltip:AddLine("Right-click: Officer panel", 0.8, 0.8, 0.8)
+            end
             GameTooltip:Show()
         end,
         OnLeave = function()
