@@ -1,5 +1,5 @@
 # Changelog
 
-## [1.0.0] — 2026-04-07
+## [1.0.0] — 2026-06-05
 
 Initial public release.
