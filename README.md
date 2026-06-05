@@ -95,14 +95,6 @@ Right-click the minimap icon → **Officer Panel** → **Rules tab**. Toggle rul
 
 ---
 
-## Enjoying GuildWeave?
-
-If GuildWeave makes your Guildfound experience better, consider supporting future development:
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/einfachpudi)
-
----
-
 ## License
 
 MIT — see [LICENSE](LICENSE)
