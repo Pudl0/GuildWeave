@@ -1,10 +1,8 @@
 # GuildWeave
 
-![Interface](https://img.shields.io/badge/Interface-20505-blue)
-![Version](https://img.shields.io/badge/Version-1.0.0-green)
-![License](https://img.shields.io/badge/License-MIT-lightgrey)
-[![CurseForge](https://img.shields.io/curseforge/dt/1502453?logo=curseforge&label=CurseForge&color=F16436)](https://www.curseforge.com/wow/addons/guildweave)
-[![Support on Ko-fi](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/einfachpudi)
+[![WoW Version](https://img.shields.io/badge/WoW-Classic%20TBC%202.5.x-blue?style=for-the-badge&logo=battledotnet)](https://worldofwarcraft.blizzard.com/)
+[![CurseForge](https://img.shields.io/curseforge/dt/1502453?style=for-the-badge&logo=curseforge&label=CurseForge&color=F16436)](https://www.curseforge.com/wow/addons/guildweave)
+[![Support on Ko-fi](https://img.shields.io/badge/Ko--fi-Pudi-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/einfachpudi)
 
 GuildWeave is a guild management addon built for **Guildfound** — a self-found-style playmode where your guild is your only trading partner. Every item must be looted and distributed within the guild. No trading with outsiders, no grouping outside the guild. GuildWeave enforces those rules automatically and gives officers the tools to manage a roster that actually plays by them.
 
