@@ -21,6 +21,16 @@ GP.COLUMNS = {
     { label = Localization["PANEL_COL_DEATHS"],width = 35  },
 }
 
+local ROLE_ABBREV = { Tank = "T", Heal = "H", DPS = "D" }
+local function AbbreviateRole(role)
+    if not role or role == "" then return "" end
+    local parts = {}
+    for part in role:gmatch("[^/]+") do
+        table.insert(parts, ROLE_ABBREV[part] or part)
+    end
+    return table.concat(parts, "/")
+end
+
 GP.PAD_X   = 16
 GP.FRAME_W = 0
 GP.FRAME_H = 420
@@ -105,7 +115,14 @@ local SORT_KEY = {
     [2] = function(e) return e.level or 0               end,
     [3] = function(e) return e.rankIndex                 end,
     [4] = function(e) return e.zone or ""               end,
-    [5] = function(e) return GP.ROLE_ORDER[e.role] or 99 end,
+    [5] = function(e)
+        local min = 99
+        for part in (e.role or ""):gmatch("[^/]+") do
+            local o = GP.ROLE_ORDER[part] or 99
+            if o < min then min = o end
+        end
+        return min
+    end,
     [6] = function(e) return e.deaths or -1              end,
 }
 
@@ -329,7 +346,11 @@ function GuildWeave.GuildPanel:Refresh()
         data = filter(data, function(e) return (e.name or ""):lower():find(s, 1, true) end)
     end
     if next(GP.filterRoles) then
-        data = filter(data, function(e) return GP.filterRoles[e.role] end)
+        data = filter(data, function(e)
+            for part in (e.role or ""):gmatch("[^/]+") do
+                if GP.filterRoles[part] then return true end
+            end
+        end)
     end
     if GP.filterProf then
         data = filter(data, function(e) return e.profName1 == GP.filterProf or e.profName2 == GP.filterProf end)
@@ -362,7 +383,7 @@ function GuildWeave.GuildPanel:Refresh()
             row.cells[2]:SetText(tostring(entry.level))
             row.cells[3]:SetText(GuildWeave:SanitizeText(entry.rank))
             row.cells[4]:SetText(GuildWeave:SanitizeText(entry.zone))
-            row.cells[5]:SetText(entry.role)
+            row.cells[5]:SetText(AbbreviateRole(entry.role))
             row.cells[6]:SetText(entry.deaths ~= nil and tostring(entry.deaths) or "")
 
             row:SetScript("OnEnter", function() row.hl:Show(); GP.ShowMemberTooltip(row, entry) end)

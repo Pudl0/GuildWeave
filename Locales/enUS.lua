@@ -77,11 +77,12 @@ Localization["WIZARD_BTN_BACK"]         = "< Back"
 Localization["WIZARD_DISCORD_PROMPT"]   = "Enter your Discord handle.\nIt will be saved to your profile."
 Localization["WIZARD_DISCORD_REQUIRED"] = "Please enter a Discord handle."
 Localization["WIZARD_PRONOUNS_PROMPT"]  = "Would you like to set preferred pronouns?\ne.g. he/him, she/her, they/them"
-Localization["WIZARD_ROLE_PROMPT"]      = "What is your primary role?"
-Localization["WIZARD_ROLE_REQUIRED"]    = "Please select a role."
+Localization["WIZARD_ROLE_PROMPT"]      = "What role(s) do you play? (select all that apply)"
+Localization["WIZARD_ROLE_REQUIRED"]    = "Please select at least one role."
 Localization["WIZARD_PROF_PROMPT"]      = "Your professions (auto-detected or enter manually):"
 -- Format: slot number
 Localization["WIZARD_PROF_LABEL"]       = "Profession %d:"
+Localization["WIZARD_PROF_SKIP"]        = "Skip (no professions)"
 
 -- ── Options panel ────────────────────────────────────────────────────────────
 Localization["OPTIONS_TAB_GENERAL"]      = "General"

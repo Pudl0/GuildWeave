@@ -235,12 +235,17 @@ local function RenderRole(frame)
     local totalW = btnW * #roles + 10 * (#roles - 1)
     local startX = -(totalW / 2) + btnW / 2
 
-    frame._selectedRole = GuildWeaveOwnProfile and GuildWeaveOwnProfile.role or nil
+    frame._selectedRoles = {}
+    if GuildWeaveOwnProfile and GuildWeaveOwnProfile.role then
+        for part in GuildWeaveOwnProfile.role:gmatch("[^/]+") do
+            frame._selectedRoles[part] = true
+        end
+    end
     frame._roleBtns = {}
 
     local function RefreshRoleButtons()
         for _, entry in ipairs(frame._roleBtns) do
-            if entry.name == frame._selectedRole then
+            if frame._selectedRoles[entry.name] then
                 entry.btn:SetNormalFontObject(GameFontHighlight)
             else
                 entry.btn:SetNormalFontObject(GameFontNormal)
@@ -257,7 +262,11 @@ local function RenderRole(frame)
         table.insert(frame._roleBtns, { name = roleName, btn = btn })
 
         btn:SetScript("OnClick", function()
-            frame._selectedRole = roleName
+            if frame._selectedRoles[roleName] then
+                frame._selectedRoles[roleName] = nil
+            else
+                frame._selectedRoles[roleName] = true
+            end
             RefreshRoleButtons()
         end)
     end
@@ -266,13 +275,19 @@ local function RenderRole(frame)
 end
 
 local function OnNextRole(frame)
-    if not frame._selectedRole then
+    local parts = {}
+    for _, roleName in ipairs(GuildWeave.Constants.ROLES) do
+        if frame._selectedRoles[roleName] then
+            table.insert(parts, roleName)
+        end
+    end
+    if #parts == 0 then
         GuildWeave:Print(GuildWeave.Constants.COLORS.WARNING ..
             Localization["WIZARD_ROLE_REQUIRED"] .. "|r")
         return false
     end
     GuildWeaveOwnProfile = GuildWeaveOwnProfile or {}
-    GuildWeaveOwnProfile.role = frame._selectedRole
+    GuildWeaveOwnProfile.role = table.concat(parts, "/")
     return true
 end
 
@@ -340,6 +355,17 @@ local function RenderProfessions(frame)
 
         frame._profFields[slot] = { nameEb = nameEb, skillEb = skillEb }
     end
+
+    local skipBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    skipBtn:SetSize(130, 26)
+    skipBtn:SetPoint("TOP", frame._profFields[2].nameEb, "BOTTOM", 0, -16)
+    skipBtn:SetText(Localization["WIZARD_PROF_SKIP"])
+    skipBtn:SetScript("OnClick", function()
+        GuildWeaveOwnProfile = GuildWeaveOwnProfile or {}
+        GuildWeaveOwnProfile.skipProfessions = true
+        NextStep(frame)
+    end)
+    TrackChild(frame, skipBtn)
 end
 
 local function OnNextProfessions(frame)
@@ -371,7 +397,8 @@ function GuildWeave:BuildWizardSteps(forceAll)
     if forceAll or not GuildWeaveOwnProfile or not GuildWeaveOwnProfile.role then
         table.insert(steps, { id = "role",        render = RenderRole,        onNext = OnNextRole })
     end
-    if forceAll or not GuildWeaveOwnProfile or not GuildWeaveOwnProfile.prof1 then
+    if forceAll or (not (GuildWeaveOwnProfile and GuildWeaveOwnProfile.skipProfessions)
+        and (not GuildWeaveOwnProfile or not GuildWeaveOwnProfile.prof1)) then
         table.insert(steps, { id = "professions", render = RenderProfessions, onNext = OnNextProfessions })
     end
 end
