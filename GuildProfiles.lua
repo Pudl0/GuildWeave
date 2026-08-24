@@ -41,7 +41,7 @@ local function Deserialize(payload)
         prof1rank = parts[3] ~= "" and tonumber(parts[3]) or nil,
         prof2     = parts[4] ~= "" and parts[4] or nil,
         prof2rank = parts[5] ~= "" and tonumber(parts[5]) or nil,
-        discord   = parts[6] ~= "" and parts[6] or nil,
+        discord   = parts[6] ~= "" and GuildWeave:SanitizeText(parts[6]) or nil,
         deaths    = parts[7] ~= "" and tonumber(parts[7]) or nil,
         lastSeen  = time(),
     }

@@ -36,6 +36,14 @@ Localization["DEATH_CAUSE"]       = " Gestorben an %s"
 Localization["DEATH_LAST_WORDS"]  = ". Die letzten Worte: \"%s\""
 Localization["DEATH_UNKNOWN"]     = "Unbekannt"
 
+-- Umgebungsbedingte Todesursachen (CLEU's environmentalType hat keine Quelleinheit)
+Localization["DEATH_CAUSE_FALLING"]  = "Sturzschaden"
+Localization["DEATH_CAUSE_DROWNING"] = "Ertrinken"
+Localization["DEATH_CAUSE_FATIGUE"]  = "Erschöpfung"
+Localization["DEATH_CAUSE_FIRE"]     = "Feuer"
+Localization["DEATH_CAUSE_LAVA"]     = "Lava"
+Localization["DEATH_CAUSE_SLIME"]    = "Schleim"
+
 Localization["DEATH_ANNOUNCEMENT_HEADER"] = "Schande!"
 
 -- ── Level-up messages ────────────────────────────────────────────────────────
@@ -155,6 +163,29 @@ Localization["FILTER_RESET"]      = "Zurücksetzen"
 Localization["TOOLTIP_RANK_IN_GUILD"] = "%s der Gilde %s"
 Localization["TOOLTIP_ROLE"]          = "Rolle:"
 Localization["TOOLTIP_DEATHS"]        = "Tode:"
+
+-- ── Broadcast ────────────────────────────────────────────────────────────────
+Localization["BROADCAST_NO_PERM"] = "Du hast keine Berechtigung für diesen Befehl."
+Localization["BROADCAST_SENT"]    = "Broadcast-Nachricht an die Gilde gesendet."
+
+-- ── Deathcounter aus der Ferne setzen ───────────────────────────────────────
+Localization["DEATHSET_NO_PERM"]  = "Du hast keine Berechtigung für diesen Befehl."
+Localization["DEATHSET_INVALID"]  = "Wert muss zwischen 0 und 999999 liegen."
+Localization["DEATHSET_SENT"]     = "Deathcounter-Update an %s gesendet."
+Localization["DEATHSET_RECEIVED"] = "Deathcounter von einem Offizier auf %d gesetzt."
+
+-- ── Popup-Bearbeitungsmodus ──────────────────────────────────────────────────
+Localization["POPUPEDIT_TITLE"]    = "GuildWeave Popup-Bearbeitungsmodus"
+Localization["POPUPEDIT_HINT"]     = "Verschiebe die Platzhalter und klicke oben auf \"Speichern & Beenden\"."
+Localization["POPUPEDIT_SAVE_BTN"] = "Speichern & Beenden"
+Localization["POPUPEDIT_ENABLED"]  = "Popup-Bearbeitungsmodus aktiv: Ziehe die Platzhalter, um Positionen zu speichern."
+Localization["POPUPEDIT_DISABLED"] = "Popup-Bearbeitungsmodus beendet."
+
+-- ── Offizier-Panel: Mitglieder-/Discord-Tabs ────────────────────────────────
+Localization["OFFICER_MEMBERS_NONE_FOUND"] = "Keine Mitglieder gefunden."
+Localization["OFFICER_DISCORD_NONE_FOUND"] = "Keine Discord Handles in den Profilen gefunden."
+Localization["CONTEXTMENU_SET_DEATHSET"]   = "Deathcounter setzen"
+Localization["DEATHSET_DIALOG_TEXT"]       = "Deathcounter für %s setzen:"
 
 -- ── Debug test data ──────────────────────────────────────────────────────────
 Localization["DEBUG_TEST_CLASSES"] = {"Krieger", "Magier", "Schamane", "Jäger"}

@@ -18,6 +18,7 @@ local moveDownAgain = anims[2]
 local fadeOut       = anims[4]
 
 -- Configure icon (colours and delays are set per-call in ShowDirect).
+GuildWeave:RestoreFramePosition(LevelUpFrame, "levelupannouncement_position", "TOP", 0, 0)
 icon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
 bodyText:SetShadowColor(0, 0, 0, 1)
 bodyText:SetShadowOffset(1, -1)

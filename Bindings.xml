@@ -1,0 +1,8 @@
+<Bindings>
+    <Binding name="GUILDWEAVE_TOGGLE_GUILDPANEL" category="GuildWeave">
+        GuildWeave_Binding_ToggleGuildPanel()
+    </Binding>
+    <Binding name="GUILDWEAVE_TOGGLE_OFFICERPANEL" category="GuildWeave">
+        GuildWeave_Binding_ToggleOfficerPanel()
+    </Binding>
+</Bindings>

@@ -18,6 +18,7 @@ function GuildWeave.PvPAnnouncement:Initialize()
     frame:RegisterForDrag("LeftButton")
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop",  frame.StopMovingOrSizing)
+    GuildWeave:RestoreFramePosition(frame, "pvpwarning_position", "CENTER", 0, 0)
     titleText:SetTextColor(1, 0.55, 0.73)
     nameText:SetTextColor(1, 0.82, 0)
 

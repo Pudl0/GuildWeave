@@ -19,6 +19,17 @@ GuildWeave.DeathLogData = {}
 -- Track deaths we've already processed to prevent duplicates
 local seenDeaths = {}
 
+-- CLEU's environmentalType field is one of this fixed Blizzard-defined set; it has no
+-- combat log source unit, so it needs its own display text instead of a sourceName.
+local ENVIRONMENTAL_CAUSE_KEYS = {
+	Falling  = "DEATH_CAUSE_FALLING",
+	Drowning = "DEATH_CAUSE_DROWNING",
+	Fatigue  = "DEATH_CAUSE_FATIGUE",
+	Fire     = "DEATH_CAUSE_FIRE",
+	Lava     = "DEATH_CAUSE_LAVA",
+	Slime    = "DEATH_CAUSE_SLIME",
+}
+
 -- Function to add an entry to the death log with rotation
 function GuildWeave.Death:AddLogEntry(entry)
 	table.insert(GuildWeave.DeathLogData, 1, entry)
@@ -138,11 +149,16 @@ function GuildWeave.Death:Initialize()
 				GuildWeave.Death.lastChatMessage = ""
 			end
 
-			-- Enforce cooldown: only send own death every OWN_DEATH_COOLDOWN seconds
+			-- Own death counter always increments, regardless of whether the guild-chat
+			-- broadcast below is suppressed.
+			CharacterDeaths = CharacterDeaths + 1
+
+			-- Enforce cooldown: only send own death every OWN_DEATH_COOLDOWN seconds.
+			-- Suppress the guild-chat broadcast entirely during raids to avoid wipe spam
+			-- (the death is still logged and counted above).
 			local now = time()
-			if (now - lastOwnDeathSendTime) >= GuildWeave.Constants.COOLDOWNS.DEATH_ANNOUNCEMENT then
+			if not GuildWeave:IsInRaid() and (now - lastOwnDeathSendTime) >= GuildWeave.Constants.COOLDOWNS.DEATH_ANNOUNCEMENT then
 				SendChatMessage(messageString, "GUILD")
-				CharacterDeaths = CharacterDeaths + 1
 				lastOwnDeathSendTime = now
 
 				-- Structured addon message for other addon users (chat parsing stays as fallback)
@@ -207,7 +223,7 @@ function GuildWeave.Death:Initialize()
 	-- Combat log for last attack source
 	GuildWeave.EventManager:RegisterHandler("COMBAT_LOG_EVENT_UNFILTERED",
 		function()
-			local _, subevent, _, _, sourceName, _, _, destGUID = CombatLogGetCurrentEventInfo()
+			local _, subevent, _, _, sourceName, _, _, destGUID, _, _, _, environmentalType = CombatLogGetCurrentEventInfo()
 
 			if destGUID ~= UnitGUID("player") then return end
 
@@ -215,8 +231,51 @@ function GuildWeave.Death:Initialize()
 			if subevent == "SWING_DAMAGE" or subevent == "RANGE_DAMAGE" or
 			   subevent == "SPELL_DAMAGE" or subevent == "SPELL_PERIODIC_DAMAGE" then
 				GuildWeave.Death.lastAttackSource = sourceName or Localization["DEATH_UNKNOWN"]
+			elseif subevent == "ENVIRONMENTAL_DAMAGE" then
+				local causeKey = ENVIRONMENTAL_CAUSE_KEYS[environmentalType]
+				GuildWeave.Death.lastAttackSource = causeKey and Localization[causeKey] or Localization["DEATH_UNKNOWN"]
 			end
 		end, 0, "LastAttackTracker")
+
+	-- A hit taken mid-fight (but survived) must not stick around to be misattributed to
+	-- a later, unrelated death (e.g. fall damage after the fight is long over) — clear
+	-- once combat ends so only damage from the encounter that actually kills us counts.
+	GuildWeave.EventManager:RegisterHandler("PLAYER_REGEN_ENABLED",
+		function() GuildWeave.Death.lastAttackSource = "" end, 0, "LastAttackTrackerCombatEnd")
+
+	-- Dedup bucket only needs to survive within a session; clear it on login so it
+	-- doesn't grow unbounded or carry stale entries across relogs.
+	GuildWeave.EventManager:RegisterHandler("PLAYER_ENTERING_WORLD",
+		function() wipe(seenDeaths) end, 0, "DeathSeenClear")
+end
+
+-- Handle a remote death-counter set request (received via whisper addon message).
+function GuildWeave.Death.HandleRemoteSet(value)
+	if value and value >= 0 and value <= 999999 then
+		CharacterDeaths = value
+		GuildWeave:Print(GuildWeave.Constants.COLORS.SUCCESS ..
+			string.format(Localization["DEATHSET_RECEIVED"], CharacterDeaths) .. "|r")
+	end
+end
+
+-- Officer action: set another guild member's death counter remotely via whisper.
+function GuildWeave.Death:SetRemote(targetName, valueStr)
+	if not CanGuildRemove() then
+		GuildWeave:Print(GuildWeave.Constants.COLORS.ERROR .. Localization["DEATHSET_NO_PERM"] .. "|r")
+		return
+	end
+
+	if not targetName or targetName == "" then return end
+
+	local value = tonumber(valueStr)
+	if not value or value < 0 or value > 999999 then
+		GuildWeave:Print(GuildWeave.Constants.COLORS.ERROR .. Localization["DEATHSET_INVALID"] .. "|r")
+		return
+	end
+
+	C_ChatInfo.SendAddonMessage(GuildWeave.prefix, "DEATHSET|" .. tostring(value), "WHISPER", targetName)
+	GuildWeave:Print(GuildWeave.Constants.COLORS.SUCCESS ..
+		string.format(Localization["DEATHSET_SENT"], targetName) .. "|r")
 end
 
 -- Define slash command

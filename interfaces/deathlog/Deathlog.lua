@@ -108,6 +108,7 @@ function GuildWeave:CreateDeathlog()
     frame:SetBackdropBorderColor(1, 0.55, 0.73, 1)
     frame:SetResizeBounds(MIN_WIDTH, MIN_HEIGHT, MAX_WIDTH, MAX_HEIGHT)
 
+    frame:RegisterForDrag("LeftButton")
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()

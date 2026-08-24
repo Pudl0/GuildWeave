@@ -51,7 +51,7 @@
     </Layers>
     <Frames>
       <!-- Scroll area: top at -(TITLE_H + COL_H + 6) = -48; bottom leaves room for filter button. -->
-      <ScrollFrame name="$parentScroll" enableMouseWheel="true">
+      <ScrollFrame name="$parentScroll">
         <Anchors>
           <Anchor point="TOPLEFT" relativePoint="TOPLEFT" x="8" y="-48"/>
           <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMRIGHT" x="-8" y="30"/>
@@ -73,18 +73,6 @@
         </Anchors>
       </Button>
     </Frames>
-  </Frame>
-
-  <!-- Filter panel shell. All internal elements and scripts set in Lua. -->
-  <Frame name="GuildWeaveGuildPanelFilter" inherits="BackdropTemplate"
-         frameStrata="HIGH" hidden="true">
-    <!-- Size, anchor to main panel, and backdrop set in Lua. -->
-  </Frame>
-
-  <!-- Profession dropdown list shell. Contents built dynamically in Lua. -->
-  <Frame name="GuildWeaveGuildPanelProfList" inherits="BackdropTemplate"
-         frameStrata="TOOLTIP" hidden="true">
-    <!-- Size, anchor to prof button, backdrop, and list items set in Lua. -->
   </Frame>
 
 </Ui>

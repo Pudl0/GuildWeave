@@ -1,72 +1,56 @@
 -- InactivityWindow.lua
--- Displays a list of inactive guild members for officers.
--- Frame shell defined in InactivityWindow.xml.
+-- Inactive Members tab content for the officer panel.
 
 local Localization = GuildWeave.Localization
 
-local window       -- GuildWeaveInactivityWindow, wired on first open
-local scrollChild
-local trashFrame
-local inactiveRows = {}
+local function BuildInactiveTab(content)
+    local ICOLS = {
+        { label = "Name",                              x = 0,   w = 110 },
+        { label = "Level",                              x = 114, w = 40  },
+        { label = Localization["INACTIVE_COL_RANK"],    x = 158, w = 110 },
+        { label = Localization["INACTIVE_COL_OFFLINE"], x = 272, w = 80  },
+    }
+    for _, col in ipairs(ICOLS) do
+        local hdr = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        hdr:SetPoint("TOPLEFT", content, "TOPLEFT", col.x + 4, -20)
+        hdr:SetWidth(col.w)
+        hdr:SetJustifyH("LEFT")
+        hdr:SetText(col.label)
+        hdr:SetTextColor(1, 0.82, 0, 1)
+    end
 
-local function WireWindow()
-    local f = GuildWeaveInactivityWindow
+    local threshold = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    threshold:SetPoint("TOPLEFT", content, "TOPLEFT", 4, -4)
+    threshold:SetTextColor(0.6, 0.6, 0.6, 1)
+    threshold:SetText(string.format(Localization["INACTIVE_HEADER"], GuildWeave.Constants.INACTIVE_DAYS_THRESHOLD))
 
-    f:SetBackdrop(GuildWeave.Constants.BACKDROP)
-    f:SetBackdropColor(0, 0, 0, 0.8)
-    f:SetBackdropBorderColor(0.4, 0.4, 0.4, 1)
-    f:SetScript("OnDragStart", f.StartMoving)
-    f:SetScript("OnDragStop", f.StopMovingOrSizing)
+    local div = content:CreateTexture(nil, "ARTWORK")
+    div:SetHeight(1)
+    div:SetColorTexture(0.4, 0.4, 0.4, 0.7)
+    div:SetPoint("TOPLEFT",  content, "TOPLEFT",  4, -36)
+    div:SetPoint("TOPRIGHT", content, "TOPRIGHT", -4, -36)
 
-    local header = _G["GuildWeaveInactivityWindowHeader"]
-    header:SetText(string.format(Localization["INACTIVE_HEADER"], GuildWeave.Constants.INACTIVE_DAYS_THRESHOLD))
+    local scrollFrame = CreateFrame("ScrollFrame", nil, content, "UIPanelScrollFrameTemplate")
+    scrollFrame:SetPoint("TOPLEFT",     content, "TOPLEFT",     4, -40)
+    scrollFrame:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -20, 8)
+    scrollFrame:EnableMouseWheel(true)
+    scrollFrame:SetScript("OnMouseWheel", function(sf, delta)
+        sf:SetVerticalScroll(
+            math.max(0, math.min(sf:GetVerticalScrollRange(), sf:GetVerticalScroll() - delta * 20))
+        )
+    end)
 
-    _G["GuildWeaveInactivityWindowCloseBtn"]:SetScript("OnClick", function() f:Hide() end)
-
-    local scrollFrame = _G["GuildWeaveInactivityWindowScrollFrame"]
-
-    scrollChild = CreateFrame("Frame", nil, scrollFrame)
-    scrollChild:SetWidth(scrollFrame:GetWidth() - 20)
+    local scrollChild = CreateFrame("Frame", nil, scrollFrame)
+    scrollChild:SetWidth(content:GetWidth() - 24)
     scrollChild:SetHeight(1)
     scrollFrame:SetScrollChild(scrollChild)
 
-    -- Column headers
-    local headerRow = CreateFrame("Frame", nil, scrollChild)
-    headerRow:SetPoint("TOPLEFT", scrollChild, "TOPLEFT", 10, -10)
-    headerRow:SetWidth(scrollChild:GetWidth() - 20)
-    headerRow:SetHeight(20)
+    content.rows = {}
 
-    local cols = {
-        { text = "Name",                                 x = 0,   w = 150, align = "LEFT" },
-        { text = "Level",                                x = 160, w = 40,  align = "CENTER" },
-        { text = Localization["INACTIVE_COL_RANK"],      x = 210, w = 120, align = "LEFT" },
-        { text = Localization["INACTIVE_COL_OFFLINE"],   x = 340, w = 80,  align = "LEFT" },
-    }
-    for _, col in ipairs(cols) do
-        local fs = headerRow:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-        fs:SetPoint("TOPLEFT", headerRow, "TOPLEFT", col.x, 0)
-        fs:SetWidth(col.w)
-        fs:SetJustifyH(col.align)
-        fs:SetText(col.text)
-    end
-
-    -- Row container (positioned below header row)
-    local container = CreateFrame("Frame", nil, scrollChild)
-    container:SetPoint("TOPLEFT", scrollChild, "TOPLEFT", 10, -35)
-    container:SetWidth(scrollChild:GetWidth() - 20)
-    container:SetHeight(1)
-
-    trashFrame = CreateFrame("Frame")
-    trashFrame:Hide()
-
-    local function UpdateWindow()
-        for _, row in ipairs(inactiveRows) do
-            row:Hide()
-            row:SetParent(trashFrame)
-        end
-        wipe(inactiveRows)
-
-        if not IsInGuild() then return end
+    local function Refresh()
+        if not content:IsShown() then return end
+        for _, row in ipairs(content.rows) do row:Hide() end
+        wipe(content.rows)
 
         local members = {}
         for _, member in ipairs(GuildWeave.GuildCache:GetFullRoster()) do
@@ -100,67 +84,66 @@ local function WireWindow()
             return a.sortableDays > b.sortableDays
         end)
 
-        local ROW_H   = 20
-        local rowYOff = 0
-        if #members > 0 then
-            for _, m in ipairs(members) do
-                local row = CreateFrame("Frame", nil, container)
-                row:SetSize(container:GetWidth(), ROW_H)
-                row:SetPoint("TOPLEFT", 0, rowYOff)
-
-                local function addCell(x, w, align, text)
-                    local fs = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-                    fs:SetPoint("TOPLEFT", row, "TOPLEFT", x, 0)
-                    fs:SetWidth(w)
-                    fs:SetJustifyH(align)
-                    fs:SetText(text)
-                end
-                addCell(0,   150, "LEFT",   m.name)
-                addCell(160, 40,  "CENTER", m.level)
-                addCell(210, 120, "LEFT",   m.rank)
-                addCell(340, 80,  "LEFT",   m.displayDuration)
-
-                if CanGuildRemove() then
-                    local kick = CreateFrame("Button", nil, row, "UIPanelButtonTemplate")
-                    kick:SetSize(80, ROW_H - 2)
-                    kick:SetPoint("TOPLEFT", row, "TOPLEFT", 430, 0)
-                    kick:SetText(Localization["INACTIVE_REMOVE_BTN"])
-                    kick:SetScript("OnClick", function()
-                        if not CanGuildRemove() then
-                            GuildWeave:Print(GuildWeave.Constants.COLORS.ERROR ..
-                                Localization["INACTIVE_NO_PERM"] .. "|r")
-                            return
-                        end
-                        StaticPopup_Show("CONFIRM_GUILD_KICK", m.fullName, nil, { memberName = m.fullName })
-                    end)
-                end
-
-                table.insert(inactiveRows, row)
-                rowYOff = rowYOff - ROW_H
-            end
-            container:SetHeight(math.max(1, #members * ROW_H))
-        else
-            local none = container:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-            none:SetPoint("TOP", container, "TOP", 0, 0)
-            none:SetText(Localization["INACTIVE_NONE_FOUND"])
-            table.insert(inactiveRows, none)
-            container:SetHeight(20)
+        if #members == 0 then
+            local msg = scrollChild:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+            msg:SetPoint("TOPLEFT", scrollChild, "TOPLEFT", 4, 0)
+            msg:SetText(Localization["INACTIVE_NONE_FOUND"])
+            msg:SetTextColor(0.6, 0.6, 0.6, 1)
+            table.insert(content.rows, msg)
+            scrollChild:SetHeight(20)
+            return
         end
 
-        scrollChild:SetHeight(math.max(scrollFrame:GetHeight(), math.abs(rowYOff) + 50))
+        local ROW_H = 20
+        for idx, m in ipairs(members) do
+            local row = CreateFrame("Frame", nil, scrollChild)
+            row:SetSize(scrollChild:GetWidth(), ROW_H)
+            row:SetPoint("TOPLEFT", 0, -(idx - 1) * ROW_H)
+
+            if idx % 2 == 0 then
+                local bg = row:CreateTexture(nil, "BACKGROUND")
+                bg:SetAllPoints()
+                bg:SetColorTexture(1, 1, 1, 0.03)
+            end
+
+            local function Cell(text, xPos, w)
+                local fs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+                fs:SetPoint("LEFT", row, "LEFT", xPos + 4, 0)
+                fs:SetWidth(w)
+                fs:SetJustifyH("LEFT")
+                fs:SetText(text)
+                return fs
+            end
+
+            Cell(GuildWeave:SanitizeText(m.name), 0,   106)
+            Cell(tostring(m.level),               114, 36)
+            Cell(GuildWeave:SanitizeText(m.rank),  158, 106)
+            Cell(m.displayDuration,                272, 76)
+
+            if CanGuildRemove() then
+                local kick = CreateFrame("Button", nil, row, "UIPanelButtonTemplate")
+                kick:SetSize(64, ROW_H - 2)
+                kick:SetPoint("LEFT", row, "LEFT", 356, 0)
+                kick:SetText(Localization["INACTIVE_REMOVE_BTN"])
+                kick:SetScript("OnClick", function()
+                    if not CanGuildRemove() then
+                        GuildWeave:Print(GuildWeave.Constants.COLORS.ERROR ..
+                            Localization["INACTIVE_NO_PERM"] .. "|r")
+                        return
+                    end
+                    StaticPopup_Show("CONFIRM_GUILD_KICK", m.fullName, nil, { memberName = m.fullName })
+                end)
+            end
+
+            table.insert(content.rows, row)
+        end
+
+        scrollChild:SetHeight(math.max(1, #members * ROW_H))
         scrollFrame:SetVerticalScroll(0)
     end
 
-    f.Update = UpdateWindow
-    return f
+    content.Refresh = Refresh
+    GuildWeave.OfficerPanel.RefreshInactive = Refresh
 end
 
-function GuildWeave:ToggleInactivityWindow()
-    if not window then window = WireWindow() end
-    if window:IsShown() then
-        window:Hide()
-    else
-        window:Show()
-        window:Update()
-    end
-end
+GuildWeave.OfficerPanel.BuildInactiveTab = BuildInactiveTab

@@ -3,6 +3,13 @@
 -- UI is handled by SetupWizard.lua.
 local Localization = GuildWeave.Localization
 
+if DiscordHandle and DiscordHandle ~= "" then
+    DiscordHandle = GuildWeave:SanitizeText(DiscordHandle)
+end
+if Pronouns and Pronouns ~= "" then
+    Pronouns = GuildWeave:SanitizeText(Pronouns)
+end
+
 -- Get the account-wide Discord handle
 function GuildWeave:GetDiscordHandle()
     return DiscordHandle
@@ -10,14 +17,14 @@ end
 
 -- Set the account-wide Discord handle and clear the guild note
 function GuildWeave:SetDiscordHandle(handle)
-    DiscordHandle = handle
+    DiscordHandle = GuildWeave:SanitizeText(handle)
     GuildWeave:ClearGuildNote()
     GuildWeave.GuildProfiles:Broadcast()
 end
 
 -- Set preferred pronouns
 function GuildWeave:SetPreferredPronouns(pronouns)
-    Pronouns = pronouns
+    Pronouns = pronouns and GuildWeave:SanitizeText(pronouns) or pronouns
     GuildWeave:ClearGuildNote()
 end
 
@@ -45,7 +52,13 @@ function GuildWeave:ClearGuildNote()
             if name then
                 local shortName = GuildWeave:RemoveRealmFromName(name)
                 if shortName == playerName then
-                    GuildRosterSetPublicNote(i, "")
+                    -- GuildRosterSetPublicNote is gone on current clients; roster edits
+                    -- live under C_GuildInfo now.
+                    if C_GuildInfo and C_GuildInfo.SetPublicNote then
+                        C_GuildInfo.SetPublicNote(i, "")
+                    elseif GuildRosterSetPublicNote then
+                        GuildRosterSetPublicNote(i, "")
+                    end
                     return
                 end
             end
@@ -85,8 +98,10 @@ function GuildWeave:MigrateFromGuildNoteIfNeeded()
     if member and member.publicNote and member.publicNote ~= "" then
         local handle, pronouns, deaths = GuildWeave:ParseGuildNote(member.publicNote)
         if handle then
-            DiscordHandle = handle
-            if pronouns and pronouns ~= "" then Pronouns = pronouns end
+            -- Note text was free-form (officers could paste item links into it), so
+            -- sanitize before adopting it as the handle/pronouns.
+            DiscordHandle = GuildWeave:SanitizeText(handle)
+            if pronouns and pronouns ~= "" then Pronouns = GuildWeave:SanitizeText(pronouns) end
             if deaths then CharacterDeaths = deaths end
             GuildWeave:Print(GuildWeave.Constants.COLORS.SUCCESS ..
                 Localization["DISCORD_MIGRATED"] .. "|r")

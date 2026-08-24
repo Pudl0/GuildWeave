@@ -77,6 +77,12 @@ function GuildWeave.Global:Initialize()
 						end
 					end
 
+					-- Remote death-counter set (officer action, sent via whisper)
+					local deathSetValue = message:match("^DEATHSET|(.+)$")
+					if deathSetValue and GuildWeave:IsValidGuildSender(sender) then
+						GuildWeave.Death.HandleRemoteSet(tonumber(deathSetValue))
+					end
+
 					-- Profile sync messages
 					GuildWeave.GuildProfiles:HandleMessage(sender, message)
 				end
@@ -232,5 +238,76 @@ function GuildWeave:IsValidGuildSender(sender)
     if not sender then return false end
     local shortName = self:RemoveRealmFromName(sender)
     return GuildWeave.GuildCache:IsGuildMember(shortName)
+end
+
+-- Registers a frame so pressing Escape closes it, like a native Blizzard panel.
+function GuildWeave:RegisterFrameForEscape(frame)
+    if not frame or not frame.GetName or not UISpecialFrames then
+        return
+    end
+
+    local frameName = frame:GetName()
+    if not frameName or frameName == "" then
+        return
+    end
+
+    for _, registeredName in ipairs(UISpecialFrames) do
+        if registeredName == frameName then
+            return
+        end
+    end
+
+    table.insert(UISpecialFrames, frameName)
+end
+
+-- Closes a floating dropdown-style list on any click outside it, and whenever
+-- ownerFrame (the popup/panel it belongs to) is hidden. listFrame must use a
+-- higher strata than "FULLSCREEN_DIALOG" (e.g. "TOOLTIP") so the catcher never
+-- swallows item clicks. excludeFrame (optional) lets clicks on that frame pass
+-- through without closing the list — e.g. an EditBox the list is suggesting
+-- against, so clicking it to keep typing doesn't fight the outside-click catcher.
+function GuildWeave:RegisterOutsideClickClose(listFrame, ownerFrame, excludeFrame)
+    local catcher = CreateFrame("Button", nil, UIParent)
+    catcher:SetAllPoints(UIParent)
+    catcher:SetFrameStrata("FULLSCREEN_DIALOG")
+    catcher:EnableMouse(true)
+    catcher:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    catcher:Hide()
+    catcher:SetScript("OnClick", function()
+        if excludeFrame and excludeFrame:IsMouseOver() then return end
+        listFrame:Hide()
+    end)
+
+    listFrame:HookScript("OnShow", function() catcher:Show() end)
+    listFrame:HookScript("OnHide", function() catcher:Hide() end)
+    if ownerFrame then
+        ownerFrame:HookScript("OnHide", function() listFrame:Hide() end)
+    end
+end
+
+-- Closes a Blizzard UIDropDownMenuTemplate dropdown (context menu or combo box) on any
+-- click outside it — needed because clicking another same/higher-strata addon frame
+-- (e.g. our own panels) eats the click before Blizzard's own auto-close logic ever
+-- sees it. onCloseFn (optional) runs extra cleanup whenever the dropdown closes.
+function GuildWeave:RegisterDropdownAutoClose(dropdownFrame, onCloseFn)
+    if not DropDownList1 then return end
+
+    local catcher = CreateFrame("Button", nil, UIParent)
+    catcher:SetAllPoints(UIParent)
+    catcher:SetFrameStrata("DIALOG")
+    catcher:EnableMouse(true)
+    catcher:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    catcher:Hide()
+    catcher:SetScript("OnClick", function() CloseDropDownMenus() end)
+
+    DropDownList1:HookScript("OnShow", function()
+        if UIDROPDOWNMENU_OPEN_MENU == dropdownFrame then
+            catcher:Show()
+        end
+    end)
+    DropDownList1:HookScript("OnHide", function()
+        catcher:Hide()
+        if onCloseFn then onCloseFn() end
+    end)
 end
 

@@ -7,6 +7,10 @@ desktop.ini
 *.zip
 *.tar.gz
 
+# BigWigs packager (downloaded locally, not vendored) and its secrets
+.release
+.env
+
 # Editor
 .vscode/
 .idea/

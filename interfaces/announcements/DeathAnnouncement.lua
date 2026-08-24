@@ -20,6 +20,7 @@ local fadeOut       = anims[4]
 DeathMessageFrame:SetBackdrop(GuildWeave.Constants.POPUPBACKDROP)
 DeathMessageFrame:SetBackdropColor(0.12, 0, 0, 0.92)
 DeathMessageFrame:SetBackdropBorderColor(1, 0.15, 0.15, 1)
+GuildWeave:RestoreFramePosition(DeathMessageFrame, "deathannouncement_position", "TOP", 0, 0)
 icon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
 header:SetText(Localization["DEATH_ANNOUNCEMENT_HEADER"])
 header:SetTextColor(1, 0.2, 0.2, 1)

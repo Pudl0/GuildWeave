@@ -38,6 +38,14 @@ Localization["DEATH_CAUSE"]       = " killed by %s"
 Localization["DEATH_LAST_WORDS"]  = ". Last words: \"%s\""
 Localization["DEATH_UNKNOWN"]     = "Unknown"
 
+-- Environmental death causes (CLEU's environmentalType has no source unit/name)
+Localization["DEATH_CAUSE_FALLING"]  = "Fall damage"
+Localization["DEATH_CAUSE_DROWNING"] = "Drowning"
+Localization["DEATH_CAUSE_FATIGUE"]  = "Exhaustion"
+Localization["DEATH_CAUSE_FIRE"]     = "Fire"
+Localization["DEATH_CAUSE_LAVA"]     = "Lava"
+Localization["DEATH_CAUSE_SLIME"]    = "Slime"
+
 Localization["DEATH_ANNOUNCEMENT_HEADER"] = "Shame!"
 
 -- ── Level-up messages ────────────────────────────────────────────────────────
@@ -170,6 +178,33 @@ Localization["FILTER_RESET"]         = "Reset"
 Localization["TOOLTIP_RANK_IN_GUILD"] = "%s of %s"
 Localization["TOOLTIP_ROLE"]          = "Role:"
 Localization["TOOLTIP_DEATHS"]        = "Deaths:"
+
+-- ── Broadcast ────────────────────────────────────────────────────────────────
+Localization["BROADCAST_NO_PERM"] = "You do not have permission to use this command."
+Localization["BROADCAST_SENT"]    = "Broadcast message sent to the guild."
+
+-- ── Popup edit mode ──────────────────────────────────────────────────────────
+Localization["POPUPEDIT_TITLE"]    = "GuildWeave Popup Edit Mode"
+Localization["POPUPEDIT_HINT"]     = "Drag the placeholders, then click \"Save & Exit\" above."
+Localization["POPUPEDIT_SAVE_BTN"] = "Save & Exit"
+Localization["POPUPEDIT_ENABLED"]  = "Popup edit mode active: drag the placeholders to save their positions."
+Localization["POPUPEDIT_DISABLED"] = "Popup edit mode exited."
+
+-- ── Officer panel: Members / Discord tabs ───────────────────────────────────
+Localization["OFFICER_MEMBERS_NONE_FOUND"] = "No members found."
+Localization["OFFICER_DISCORD_NONE_FOUND"] = "No Discord handles found in profiles."
+-- Format: target name
+Localization["CONTEXTMENU_SET_DEATHSET"]   = "Set death counter"
+-- Format: target name
+Localization["DEATHSET_DIALOG_TEXT"]       = "Set death counter for %s:"
+
+-- ── Remote death counter set ────────────────────────────────────────────────
+Localization["DEATHSET_NO_PERM"]  = "You do not have permission to use this command."
+Localization["DEATHSET_INVALID"]  = "Value must be between 0 and 999999."
+-- Format: target name
+Localization["DEATHSET_SENT"]     = "Death counter update sent to %s."
+-- Format: new value
+Localization["DEATHSET_RECEIVED"] = "Death counter set to %d by an officer."
 
 -- ── Debug test data ──────────────────────────────────────────────────────────
 Localization["DEBUG_TEST_CLASSES"] = {"Warrior", "Mage", "Shaman", "Hunter"}

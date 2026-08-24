@@ -108,6 +108,7 @@ local function WireFrame()
     frame:SetBackdrop(GuildWeave.Constants.BACKDROP)
     frame:SetBackdropColor(0.05, 0.05, 0.05, 0.97)
     frame:SetBackdropBorderColor(0.6, 0.6, 0.6, 1)
+    frame:RegisterForDrag("LeftButton")
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop",  frame.StopMovingOrSizing)
 
@@ -121,15 +122,14 @@ local function WireFrame()
         frame.dots[i] = _G["GuildWeaveSetupWizardDotContainerDot" .. i]
     end
 
-    frame.stepLabel = _G["GuildWeaveSetupWizardStepLabel"]
+    frame.stepLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     frame.stepLabel:SetPoint("TOP", frame.dotContainer, "BOTTOM", 0, -4)
     frame.stepLabel:SetTextColor(0.7, 0.7, 0.7, 1)
 
-    local divTop = _G["GuildWeaveSetupWizardDivTop"]
-    divTop:SetPoint("TOP", frame.stepLabel, "BOTTOM", 0, -8)
-
-    frame.contentAnchor = _G["GuildWeaveSetupWizardContentAnchor"]
-    frame.contentAnchor:SetPoint("TOPLEFT", divTop, "BOTTOMLEFT", 0, 0)
+    frame.divTop = frame:CreateTexture(nil, "ARTWORK")
+    frame.divTop:SetSize(420, 1)
+    frame.divTop:SetColorTexture(0.3, 0.3, 0.3, 0.8)
+    frame.divTop:SetPoint("TOP", frame.stepLabel, "BOTTOM", 0, -8)
 
     frame.backBtn = _G["GuildWeaveSetupWizardBackBtn"]
     frame.backBtn:SetText(Localization["WIZARD_BTN_BACK"])
@@ -145,10 +145,10 @@ WireFrame()
 -- ── Step renderers ────────────────────────────────────────────────────────────
 
 local function RenderDiscord(frame)
-    local f = frame.contentAnchor
+    local f = frame.divTop
 
     local lbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    lbl:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 20, -20)
+    lbl:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, -20)
     lbl:SetWidth(FRAME_W - 40)
     lbl:SetJustifyH("CENTER")
     lbl:SetText(Localization["WIZARD_DISCORD_PROMPT"])
@@ -185,10 +185,10 @@ local function OnNextDiscord(frame)
 end
 
 local function RenderPronouns(frame)
-    local f = frame.contentAnchor
+    local f = frame.divTop
 
     local lbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    lbl:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 20, -20)
+    lbl:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, -20)
     lbl:SetWidth(FRAME_W - 40)
     lbl:SetJustifyH("CENTER")
     lbl:SetText(Localization["WIZARD_PRONOUNS_PROMPT"])
@@ -221,10 +221,10 @@ local function OnNextPronouns(frame)
 end
 
 local function RenderRole(frame)
-    local f = frame.contentAnchor
+    local f = frame.divTop
 
     local lbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    lbl:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 20, -24)
+    lbl:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, -24)
     lbl:SetWidth(FRAME_W - 40)
     lbl:SetJustifyH("CENTER")
     lbl:SetText(Localization["WIZARD_ROLE_PROMPT"])
@@ -292,10 +292,10 @@ local function OnNextRole(frame)
 end
 
 local function RenderProfessions(frame)
-    local f = frame.contentAnchor
+    local f = frame.divTop
 
     local lbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-    lbl:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 20, -16)
+    lbl:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, -16)
     lbl:SetWidth(FRAME_W - 40)
     lbl:SetJustifyH("CENTER")
     lbl:SetText(Localization["WIZARD_PROF_PROMPT"])

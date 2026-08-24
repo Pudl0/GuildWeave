@@ -1,7 +1,7 @@
 -- GuildPanel/GuildPanel.lua
 -- Guild member panel: namespace, data, rows, main frame, and filter panel.
--- GuildWeaveGuildPanel, GuildWeaveGuildPanelFilter, and GuildWeaveGuildPanelProfList
--- frames are declared in GuildPanel.xml.
+-- GuildWeaveGuildPanel is declared in GuildPanel.xml; the filter panel and
+-- profession dropdown are created here in Lua.
 
 GuildWeave.GuildPanel = {}
 local GP = GuildWeave.GuildPanel
@@ -171,7 +171,7 @@ function GP.ShowMemberTooltip(anchor, entry)
     if hasProfile then
         GameTooltip:AddLine(" ")
         if entry.role    ~= "" then GameTooltip:AddDoubleLine(Localization["PANEL_TIP_ROLE"],  entry.role,    0.65, 0.65, 0.65, 1,    1,    1)   end
-        if entry.discord ~= "" then GameTooltip:AddDoubleLine("Discord:",                      entry.discord, 0.65, 0.65, 0.65, 0.55, 0.55, 0.9) end
+        if entry.discord ~= "" then GameTooltip:AddDoubleLine("Discord:",                      GuildWeave:SanitizeText(entry.discord), 0.65, 0.65, 0.65, 0.55, 0.55, 0.9) end
         if entry.prof1         then GameTooltip:AddDoubleLine(Localization["PANEL_TIP_PROF1"], entry.prof1,   0.65, 0.65, 0.65, 0.9,  0.75, 0.4) end
         if entry.prof2         then GameTooltip:AddDoubleLine(Localization["PANEL_TIP_PROF2"], entry.prof2,   0.65, 0.65, 0.65, 0.9,  0.75, 0.4) end
     end
@@ -231,6 +231,7 @@ function GuildWeave.GuildPanel:Create()
     f:SetBackdropColor(0.07, 0.07, 0.07, 0.96)
     f:SetBackdropBorderColor(0.45, 0.45, 0.45, 1)
 
+    f:RegisterForDrag("LeftButton")
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
@@ -306,6 +307,7 @@ function GuildWeave.GuildPanel:Create()
     end
 
     local scrollFrame = GuildWeaveGuildPanelScroll
+    scrollFrame:EnableMouseWheel(true)
     scrollFrame:SetScript("OnMouseWheel", function(sf, delta)
         local step = GP.ROW_H * 3
         sf:SetVerticalScroll(math.max(0, math.min(sf:GetVerticalScrollRange(), sf:GetVerticalScroll() - delta * step)))
@@ -436,12 +438,14 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
     local PAD  = 10
     local INNER_W = FP_W - PAD * 2
 
-    local fp = GuildWeaveGuildPanelFilter
+    local fp = CreateFrame("Frame", "GuildWeaveGuildPanelFilter", UIParent, "BackdropTemplate")
+    fp:SetFrameStrata("HIGH")
     fp:SetSize(FP_W, 220)
     fp:SetBackdrop(BACKDROP)
     fp:SetBackdropColor(0.07, 0.07, 0.07, 0.97)
     fp:SetBackdropBorderColor(0.45, 0.45, 0.45, 1)
     fp:SetPoint("TOPLEFT", f, "TOPRIGHT", 6, 0)
+    fp:Hide()
 
     local titleLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     titleLbl:SetPoint("TOPLEFT", fp, "TOPLEFT", PAD, -PAD)
@@ -522,12 +526,14 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
     profBtn:SetPoint("TOPLEFT", profLbl, "BOTTOMLEFT", 0, -4)
     profBtn:SetText(Localization["FILTER_ALL_PROFS"])
 
-    local profList = GuildWeaveGuildPanelProfList
+    local profList = CreateFrame("Frame", "GuildWeaveGuildPanelProfList", UIParent, "BackdropTemplate")
+    profList:SetFrameStrata("TOOLTIP")
     profList:SetSize(INNER_W, 10)
     profList:SetBackdrop(BACKDROP)
     profList:SetBackdropColor(0.05, 0.05, 0.05, 0.98)
     profList:SetBackdropBorderColor(0.45, 0.45, 0.45, 1)
     profList:SetPoint("TOPLEFT", profBtn, "BOTTOMLEFT", 0, -2)
+    profList:Hide()
     profList.btns = {}
 
     local function BuildProfList()

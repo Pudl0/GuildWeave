@@ -2,8 +2,10 @@
 ## Title: GuildWeave
 ## Notes: A configurable guild management addon for WoW Classic TBC.
 ## Author: Pudi
-## Version: 1.0.0
+## Version: 1.1.0
+## X-Curse-Project-ID: 1502453
 ## IconTexture: Interface\AddOns\GuildWeave\media\graphics\GuildLogo.tga
+## Bindings: Bindings.xml
 ## SavedVariablesPerCharacter: CharacterDeaths, GuildWeaveDB, GuildWeaveOwnProfile
 ## SavedVariables: DiscordHandle, Pronouns, GuildWeaveProfileCache
 
@@ -33,22 +35,27 @@ Rules.lua
 LevelUp.lua
 MailHandler.lua
 AnnouncementQueue.lua
+Broadcast.lua
+Bindings.lua
 interfaces\popups\GenericPopup.xml
 interfaces\popups\GenericPopup.lua
 interfaces\announcements\NotificationFrames.xml
 interfaces\announcements\DeathAnnouncement.lua
 interfaces\announcements\LevelUpAnnouncement.lua
 interfaces\announcements\PvPAnnouncement.lua
+interfaces\PopupEditMode.lua
 interfaces\deathlog\Deathlog.xml
 interfaces\deathlog\Deathlog.lua
 interfaces\setup\SetupWizard.xml
 interfaces\setup\ProfileDataHandler.lua
 interfaces\setup\SetupWizard.lua
+interfaces\TabSwitcher.lua
+interfaces\FilterPanel.lua
 interfaces\officer\OfficerPanel.xml
-interfaces\officer\InactivityWindow.xml
 interfaces\officer\OfficerData.lua
-interfaces\officer\InactivityWindow.lua
 interfaces\officer\OfficerPanel.lua
+interfaces\officer\InactivityWindow.lua
+interfaces\officer\MemberContextMenu.lua
 interfaces\guildpanel\GuildPanel.xml
 interfaces\guildpanel\GuildPanel.lua
 Death.lua
