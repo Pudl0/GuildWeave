@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.1.3] (2026-08-28)
+
+Fixed:
+- Sorting the guild panel by clicking a column header (e.g. Zone) no longer errors out
+- Guild panel now hides offline members by default when opened
+
 ## [1.1.2] (2026-08-28)
 
 Fixed:

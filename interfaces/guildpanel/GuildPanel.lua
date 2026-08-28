@@ -37,7 +37,7 @@ GP.FRAME_H = 420
 
 GP.sortCol     = 0
 GP.sortAsc     = true
-GP.hideOffline = false
+GP.hideOffline = true
 GP.ROLE_ORDER  = { Tank = 1, Heal = 2, DPS = 3 }
 
 GP.filterName  = ""
@@ -133,7 +133,7 @@ function GP.SortData(data)
         if not fn then return a.name < b.name end
         local va, vb = fn(a), fn(b)
         if va == vb then return a.name < b.name end
-        return GP.sortAsc and va < vb or va > vb
+        if GP.sortAsc then return va < vb else return va > vb end
     end)
 end
 

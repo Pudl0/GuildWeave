@@ -2,7 +2,7 @@
 ## Title: GuildWeave
 ## Notes: A configurable guild management addon for WoW Classic TBC.
 ## Author: Pudi
-## Version: 1.1.2
+## Version: 1.1.3
 ## X-Curse-Project-ID: 1502453
 ## IconTexture: Interface\AddOns\GuildWeave\media\graphics\GuildLogo.tga
 ## Bindings: Bindings.xml
