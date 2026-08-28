@@ -100,9 +100,6 @@ function GuildWeave.Death:Initialize()
 			local sex = UnitSex("player")
 
 			local inPvP = GuildWeave:IsInBattleground() or GuildWeave:IsInRaid() or GuildWeave:IsInArena()
-			if inPvP and level == GuildWeave.Rules.CurrentCap then
-				return
-			end
 
 			-- Safe zone query with error handling
 			local zone, mapID
@@ -149,15 +146,23 @@ function GuildWeave.Death:Initialize()
 				GuildWeave.Death.lastChatMessage = ""
 			end
 
-			-- Own death counter always increments, regardless of whether the guild-chat
-			-- broadcast below is suppressed.
+			-- Own death counter always increments, even for PvP / instanced deaths
+			-- whose broadcast and death-log entry are suppressed below.
 			CharacterDeaths = CharacterDeaths + 1
 
+			-- PvP and raid-instance deaths count toward the total but are never
+			-- broadcast to guild chat or added to the death log (avoids BG/wipe spam).
+			-- Still sync the updated counter to the guild.
+			if inPvP then
+				C_Timer.After(2, function()
+					GuildWeave.GuildProfiles:Broadcast()
+				end)
+				return
+			end
+
 			-- Enforce cooldown: only send own death every OWN_DEATH_COOLDOWN seconds.
-			-- Suppress the guild-chat broadcast entirely during raids to avoid wipe spam
-			-- (the death is still logged and counted above).
 			local now = time()
-			if not GuildWeave:IsInRaid() and (now - lastOwnDeathSendTime) >= GuildWeave.Constants.COOLDOWNS.DEATH_ANNOUNCEMENT then
+			if (now - lastOwnDeathSendTime) >= GuildWeave.Constants.COOLDOWNS.DEATH_ANNOUNCEMENT then
 				SendChatMessage(messageString, "GUILD")
 				lastOwnDeathSendTime = now
 
