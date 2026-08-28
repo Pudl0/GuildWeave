@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.1] (2026-08-26)
+
+Fixed:
+- Removing all Battleground and Arena deaths from DeathBroadcasting. They only count towards the timer. Also removing raid deaths from broadcasting to prevent spam
+
 ## [1.1.0] (2026-08-24)
 
 New:
