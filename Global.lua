@@ -1,4 +1,4 @@
--- Global table for the addon (Config.lua may have already initialised it)
+-- Global table for the addon
 GuildWeave = GuildWeave or {}
 
 local Localization = GuildWeave.Localization

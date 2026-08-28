@@ -43,9 +43,9 @@ function GuildWeave:InitMinimapIcon()
     if not DBIcon or not GuildWeave.minimapDataObject then return end
 
     if not GuildWeave.minimapRegistered then
-        GuildWeave.db = GuildWeave.db or {}
-        GuildWeave.db.minimap = GuildWeave.db.minimap or { hide = false }
-        DBIcon:Register("GuildWeave", GuildWeave.minimapDataObject, GuildWeave.db.minimap)
+        GuildWeaveDB = GuildWeaveDB or {}
+        GuildWeaveDB.minimap = GuildWeaveDB.minimap or { hide = false }
+        DBIcon:Register("GuildWeave", GuildWeave.minimapDataObject, GuildWeaveDB.minimap)
         GuildWeave.minimapRegistered = true
     end
 end

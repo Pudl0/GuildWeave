@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.1.2] (2026-08-28)
+
+Fixed:
+- Minimap icon position now saves properly and is restored between sessions
+
 ## [1.1.1] (2026-08-26)
 
 Fixed:

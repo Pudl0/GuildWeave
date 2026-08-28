@@ -6,7 +6,6 @@ GuildWeave.Constants = {}
 -- ============================================================
 -- == GUILD CONFIGURATION =====================================
 -- Officers configure rules via the in-game Officer Panel.
--- The only file-level config is in Config.lua.
 -- ============================================================
 
 -- Key used in guild info to encode the current level cap.
