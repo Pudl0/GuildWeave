@@ -5,7 +5,7 @@
 Fixed:
 - Minimap icon position now saves properly and is restored between sessions
 
-## [1.1.1] (2026-08-26)
+## [1.1.1] (2026-08-28)
 
 Fixed:
 - Removing all Battleground and Arena deaths from DeathBroadcasting. They only count towards the timer. Also removing raid deaths from broadcasting to prevent spam
