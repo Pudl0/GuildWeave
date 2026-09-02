@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0] (2026-09-02)
+
+New:
+- Compact death notices: when a guild member dies while you are in a dungeon or raid, the death shows as a small note in the top-right corner instead of the large full-screen popup, so it never covers your view mid-fight
+- New option (Notifications → Death Messages → Compact view) to always use the small notice, even out in the open world
+
+Changed:
+- Your own death no longer shows an announcement popup. It still counts towards your death total and still appears in the death log
+- The officer panel and setup wizard now match the guild panel's look, with a dark title bar, an icon, and matching borders
+- The setup wizard window now shrinks to fit each step instead of leaving a large empty gap
+
+Fixed:
+- Parts of the officer panel, minimap tooltip, filter panels, and death log were still shown in English on German clients
+
 ## [1.1.3] (2026-08-28)
 
 Fixed:

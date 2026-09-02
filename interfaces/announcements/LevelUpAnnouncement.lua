@@ -1,58 +1,50 @@
 -- LevelUpAnnouncement.lua
 -- Displays animated level-up and cap announcements when guild members reach milestones.
 -- Routes through AnnouncementQueue so it never overrides death or other announcements.
--- LevelUpFrame is defined in NotificationFrames.xml (AnnouncementFrameTemplate).
 
 GuildWeave.LevelUpAnnouncement = {}
 local Localization = GuildWeave.Localization
 
--- Named children from the XML template (expanded from $parent → LevelUpFrame).
--- AnimationGroup is globally named; individual animations are retrieved via GetAnimations().
-local icon      = _G["LevelUpFrameIcon"]
-local header    = _G["LevelUpFrameHeader"]
-local bodyText  = _G["LevelUpFrameBodyText"]
-local animGroup = _G["LevelUpFrameAnimGroup"]
--- XML order: moveDown(1), moveDownAgain(2), fadeIn(3), fadeOut(4)
-local anims         = {animGroup:GetAnimations()}
-local moveDownAgain = anims[2]
-local fadeOut       = anims[4]
+local frame        = GuildWeave.CreateAnnouncementFrame("LevelUpFrame", 999)
+local header       = frame.header
+local bodyText     = frame.bodyText
+local animGroup    = frame.animGroup
+local moveDownAgain = frame.moveDownAgain
+local fadeOut      = frame.fadeOut
 
--- Configure icon (colours and delays are set per-call in ShowDirect).
-GuildWeave:RestoreFramePosition(LevelUpFrame, "levelupannouncement_position", "TOP", 0, 0)
-icon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
-bodyText:SetShadowColor(0, 0, 0, 1)
-bodyText:SetShadowOffset(1, -1)
+-- Colours and delays are set per-call in ShowDirect.
+GuildWeave:RestoreFramePosition(frame, "levelupannouncement_position", "TOP", 0, 0)
+frame.icon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
 
--- Notify the queue when the animation finishes.
 animGroup:SetScript("OnFinished", function()
-	LevelUpFrame:Hide()
+	frame:Hide()
 	GuildWeave.AnnouncementQueue:Finished()
 end)
 
 -- Internal: actually show the frame (called from inside a queue slot).
 -- levelup: ~6 s total (delay 4.5), cap: ~9 s total (delay 7.5).
 local function ShowDirect(name, level, isCap)
-	LevelUpFrame:SetBackdrop(GuildWeave.Constants.POPUPBACKDROP)
+	frame:SetBackdrop(GuildWeave.Constants.POPUPBACKDROP)
 	if isCap then
 		moveDownAgain:SetStartDelay(7.5)
 		fadeOut:SetStartDelay(7.5)
-		LevelUpFrame:SetBackdropColor(0, 0.06, 0.12, 0.92)
-		LevelUpFrame:SetBackdropBorderColor(0.4, 1, 1, 1)
+		frame:SetBackdropColor(0, 0.06, 0.12, 0.92)
+		frame:SetBackdropBorderColor(0.4, 1, 1, 1)
 		header:SetText(Localization["CAP_ANNOUNCEMENT_HEADER"])
 		header:SetTextColor(0.4, 1, 1, 1)
 		bodyText:SetTextColor(0.4, 1, 1, 1)
 	else
 		moveDownAgain:SetStartDelay(4.5)
 		fadeOut:SetStartDelay(4.5)
-		LevelUpFrame:SetBackdropColor(0.1, 0.07, 0, 0.92)
-		LevelUpFrame:SetBackdropBorderColor(1, 0.84, 0, 1)
+		frame:SetBackdropColor(0.1, 0.07, 0, 0.92)
+		frame:SetBackdropBorderColor(1, 0.84, 0, 1)
 		header:SetText(Localization["LEVELUP_ANNOUNCEMENT_HEADER"])
 		header:SetTextColor(1, 0.84, 0, 1)
 		bodyText:SetTextColor(1, 0.84, 0, 1)
 	end
 	bodyText:SetText(string.format(Localization["LEVELUP_ANNOUNCEMENT_BODY"], GuildWeave:SanitizeText(name), level))
-	LevelUpFrame:SetAlpha(0)
-	LevelUpFrame:Show()
+	frame:SetAlpha(0)
+	frame:Show()
 	animGroup:Stop()
 	animGroup:Play()
 end

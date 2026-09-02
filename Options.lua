@@ -101,6 +101,15 @@ local options = {
                             get   = get,
                             set   = set,
                         },
+                        deathframe_always_small = {
+                            type  = "toggle",
+                            name  = Localization["OPTIONS_DEATH_SMALL_NAME"],
+                            desc  = Localization["OPTIONS_DEATH_SMALL_DESC"],
+                            order = 3,
+                            width = "full",
+                            get   = get,
+                            set   = set,
+                        },
                     },
                 },
                 levelup = {
@@ -182,18 +191,19 @@ AceConfigDialog:AddToBlizOptions("GuildWeave", "GuildWeave")
 
 function GuildWeave:InitializeOptionsDB()
     local defaults = {
-        show_version        = false,
-        auto_decline_duels  = false,
-        show_discord_handle = false,
-        pvp_alert           = true,
-        pvp_alert_sound     = true,
-        deathmessages       = true,
-        deathmessages_sound = true,
-        levelmessages       = true,
-        levelmessages_sound = true,
-        capmessages         = true,
-        capmessages_sound   = true,
-        sound_channel       = "Master",
+        show_version            = false,
+        auto_decline_duels      = false,
+        show_discord_handle     = false,
+        pvp_alert               = true,
+        pvp_alert_sound         = true,
+        deathmessages           = true,
+        deathmessages_sound     = true,
+        deathframe_always_small = false,
+        levelmessages           = true,
+        levelmessages_sound     = true,
+        capmessages             = true,
+        capmessages_sound       = true,
+        sound_channel           = "Master",
     }
     for key, value in pairs(defaults) do
         if GuildWeaveDB[key] == nil then

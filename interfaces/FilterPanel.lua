@@ -45,13 +45,13 @@ function GuildWeave.Shared.CreateFilterPanel(cfg)
     -- ── Title ────────────────────────────────────────────────────────────────
     local titleLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     titleLbl:SetPoint("TOPLEFT", fp, "TOPLEFT", PAD, -PAD)
-    titleLbl:SetText("Filter")
+    titleLbl:SetText(Localization["LBL_FILTER"])
     titleLbl:SetTextColor(1, 0.82, 0, 1)
 
     -- ── Name search ──────────────────────────────────────────────────────────
     local nameLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     nameLbl:SetPoint("TOPLEFT", titleLbl, "BOTTOMLEFT", 0, -10)
-    nameLbl:SetText("Name:")
+    nameLbl:SetText(Localization["LBL_NAME_COLON"])
     nameLbl:SetTextColor(0.8, 0.8, 0.8, 1)
 
     local nameEB = CreateFrame("EditBox", nil, fp, BackdropTemplateMixin and "BackdropTemplate")

@@ -56,7 +56,7 @@ function GuildWeave.Rules:LoadFromGuildInfo()
             GuildWeave.LevelUps:CheckForCap(UnitLevel("player"))
         end
 
-        GuildWeave:Print("Rules loaded.")
+        GuildWeave:Print(Localization["RULES_LOADED"])
     end)
 end
 

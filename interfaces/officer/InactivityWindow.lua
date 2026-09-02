@@ -5,8 +5,8 @@ local Localization = GuildWeave.Localization
 
 local function BuildInactiveTab(content)
     local ICOLS = {
-        { label = "Name",                              x = 0,   w = 110 },
-        { label = "Level",                              x = 114, w = 40  },
+        { label = Localization["LBL_NAME"],             x = 0,   w = 110 },
+        { label = Localization["LBL_LEVEL"],            x = 114, w = 40  },
         { label = Localization["INACTIVE_COL_RANK"],    x = 158, w = 110 },
         { label = Localization["INACTIVE_COL_OFFLINE"], x = 272, w = 80  },
     }

@@ -1,15 +1,24 @@
 -- PvPAnnouncement.lua
 -- Shows a popup warning when the player targets a PvP-flagged unit.
--- Frame is defined in NotificationFrames.xml.
 
 GuildWeave.PvPAnnouncement = {}
 local Localization = GuildWeave.Localization
 
 GuildWeave.lastPvPAlert = {}
 
-local frame     = GuildWeavePvPFrame
-local titleText = _G["GuildWeavePvPFrameTitle"]
-local nameText  = _G["GuildWeavePvPFrameName"]
+local frame = CreateFrame("Frame", "GuildWeavePvPFrame", UIParent, "BackdropTemplate")
+frame:SetSize(320, 110)
+frame:SetFrameStrata("FULLSCREEN_DIALOG")
+frame:SetPoint("CENTER", UIParent, "CENTER")
+frame:SetMovable(true)
+frame:EnableMouse(true)
+frame:Hide()
+
+local titleText = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+titleText:SetPoint("TOP", frame, "TOP", 0, -20)
+
+local nameText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+nameText:SetPoint("BOTTOM", frame, "BOTTOM", 0, 25)
 
 function GuildWeave.PvPAnnouncement:Initialize()
     frame:SetBackdrop(GuildWeave.Constants.DARK_BACKDROP)

@@ -1,6 +1,6 @@
 -- SetupWizard.lua
 -- Unified first-login setup wizard.
--- Static frame defined in SetupWizard.xml; steps built dynamically at show time.
+-- Frame is built in BuildFrame(); steps are built dynamically at show time.
 
 local steps       = {}   -- array of {id, render, onNext} tables
 local currentStep = 1
@@ -9,6 +9,7 @@ local Localization = GuildWeave.Localization
 -- ── Helpers ──────────────────────────────────────────────────────────────────
 
 local FRAME_W = 460
+local FRAME_H = 420   -- fallback height; each step sets its own via step.frameH
 local DOT_SIZE    = 12
 local DOT_SPACING = 20
 
@@ -61,7 +62,10 @@ local function ShowStep(frame, index)
     ClearContent(frame)
 
     local step = steps[index]
-    if step then step.render(frame) end
+    if step then
+        step.render(frame)
+        frame:SetHeight(step.frameH or FRAME_H)
+    end
 
     UpdateProgress(frame)
 
@@ -98,49 +102,88 @@ local function PrevStep(frame)
     if currentStep > 1 then ShowStep(frame, currentStep - 1) end
 end
 
--- ── Frame wiring (XML frame + Lua behaviour) ──────────────────────────────────
+-- ── Frame construction ───────────────────────────────────────────────────────
 
-local WizardFrame = GuildWeaveSetupWizard
+local function BuildFrame()
+    local TITLE_H = 22
 
-local function WireFrame()
-    local frame = WizardFrame
+    local frame = CreateFrame("Frame", "GuildWeaveSetupWizard", UIParent, "BackdropTemplate")
+    frame:SetSize(FRAME_W, FRAME_H)
+    frame:SetPoint("CENTER", UIParent, "CENTER")
+    frame:SetFrameStrata("DIALOG")
+    frame:SetMovable(true)
+    frame:EnableMouse(true)
+    frame:Hide()
 
-    frame:SetBackdrop(GuildWeave.Constants.BACKDROP)
-    frame:SetBackdropColor(0.05, 0.05, 0.05, 0.97)
-    frame:SetBackdropBorderColor(0.6, 0.6, 0.6, 1)
+    frame:SetBackdrop(GuildWeave.Constants.PANEL_BACKDROP)
+    frame:SetBackdropColor(0.07, 0.07, 0.07, 0.96)
+    frame:SetBackdropBorderColor(0.45, 0.45, 0.45, 1)
     frame:RegisterForDrag("LeftButton")
     frame:SetScript("OnDragStart", frame.StartMoving)
     frame:SetScript("OnDragStop",  frame.StopMovingOrSizing)
 
-    local title = _G["GuildWeaveSetupWizardTitle"]
+    -- Title bar
+    local titleBg = frame:CreateTexture(nil, "BACKGROUND")
+    titleBg:SetPoint("TOPLEFT",  frame, "TOPLEFT",   4, -4)
+    titleBg:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4)
+    titleBg:SetHeight(TITLE_H)
+    titleBg:SetColorTexture(0.12, 0.12, 0.12, 1)
+
+    local titleIcon = frame:CreateTexture(nil, "OVERLAY")
+    titleIcon:SetSize(18, 18)
+    titleIcon:SetPoint("LEFT", titleBg, "LEFT", 6, 0)
+    titleIcon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
+
+    local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    title:SetPoint("LEFT", titleIcon, "RIGHT", 4, 0)
     title:SetText(GuildWeave.displayName .. " Setup")
     title:SetTextColor(1, 0.82, 0, 1)
 
-    frame.dotContainer = _G["GuildWeaveSetupWizardDotContainer"]
+    -- Progress dots (max 5) — small colored squares, resized/coloured in UpdateProgress
+    local dotContainer = CreateFrame("Frame", nil, frame)
+    dotContainer:SetSize(DOT_SPACING * 5, DOT_SIZE)
+    dotContainer:SetPoint("TOP", frame, "TOP", 0, -44)
+    frame.dotContainer = dotContainer
     frame.dots = {}
     for i = 1, 5 do
-        frame.dots[i] = _G["GuildWeaveSetupWizardDotContainerDot" .. i]
+        local dot = dotContainer:CreateTexture(nil, "OVERLAY")
+        dot:SetSize(DOT_SIZE, DOT_SIZE)
+        dot:SetPoint("LEFT", dotContainer, "LEFT", (i - 1) * DOT_SPACING, 0)
+        dot:SetColorTexture(0.3, 0.3, 0.3, 1)
+        frame.dots[i] = dot
     end
 
     frame.stepLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-    frame.stepLabel:SetPoint("TOP", frame.dotContainer, "BOTTOM", 0, -4)
+    frame.stepLabel:SetPoint("TOP", dotContainer, "BOTTOM", 0, -4)
     frame.stepLabel:SetTextColor(0.7, 0.7, 0.7, 1)
 
     frame.divTop = frame:CreateTexture(nil, "ARTWORK")
-    frame.divTop:SetSize(420, 1)
+    frame.divTop:SetSize(FRAME_W - 40, 1)
     frame.divTop:SetColorTexture(0.3, 0.3, 0.3, 0.8)
     frame.divTop:SetPoint("TOP", frame.stepLabel, "BOTTOM", 0, -8)
 
-    frame.backBtn = _G["GuildWeaveSetupWizardBackBtn"]
+    -- Footer divider + navigation buttons (bottom-anchored, so they follow SetHeight)
+    local divBot = frame:CreateTexture(nil, "ARTWORK")
+    divBot:SetSize(FRAME_W - 40, 1)
+    divBot:SetColorTexture(0.3, 0.3, 0.3, 0.8)
+    divBot:SetPoint("BOTTOM", frame, "BOTTOM", 0, 52)
+
+    frame.backBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    frame.backBtn:SetSize(90, 26)
+    frame.backBtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 20, 16)
     frame.backBtn:SetText(Localization["WIZARD_BTN_BACK"])
     frame.backBtn:SetScript("OnClick", function() PrevStep(frame) end)
 
-    frame.nextBtn = _G["GuildWeaveSetupWizardNextBtn"]
+    frame.nextBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+    frame.nextBtn:SetSize(90, 26)
+    frame.nextBtn:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -20, 16)
     frame.nextBtn:SetText(Localization["WIZARD_BTN_NEXT"])
     frame.nextBtn:SetScript("OnClick", function() NextStep(frame) end)
+
+    return frame
 end
 
-WireFrame()
+local WizardFrame = BuildFrame()
 
 -- ── Step renderers ────────────────────────────────────────────────────────────
 
@@ -317,7 +360,7 @@ local function RenderProfessions(frame)
 
         local skillLbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         skillLbl:SetPoint("TOPLEFT", lbl, "BOTTOMLEFT", SKILL_X, yOff)
-        skillLbl:SetText("Skill:")
+        skillLbl:SetText(Localization["LBL_SKILL_COLON"])
         skillLbl:SetTextColor(0.8, 0.8, 0.8, 1)
         TrackChild(frame, skillLbl)
 
@@ -389,17 +432,17 @@ function GuildWeave:BuildWizardSteps(forceAll)
     steps = {}
 
     if forceAll or not DiscordHandle or DiscordHandle == "" then
-        table.insert(steps, { id = "discord",     render = RenderDiscord,     onNext = OnNextDiscord })
+        table.insert(steps, { id = "discord",     render = RenderDiscord,     onNext = OnNextDiscord,     frameH = 250 })
     end
     if forceAll or Pronouns == nil then
-        table.insert(steps, { id = "pronouns",    render = RenderPronouns,    onNext = OnNextPronouns })
+        table.insert(steps, { id = "pronouns",    render = RenderPronouns,    onNext = OnNextPronouns,    frameH = 250 })
     end
     if forceAll or not GuildWeaveOwnProfile or not GuildWeaveOwnProfile.role then
-        table.insert(steps, { id = "role",        render = RenderRole,        onNext = OnNextRole })
+        table.insert(steps, { id = "role",        render = RenderRole,        onNext = OnNextRole,        frameH = 250 })
     end
     if forceAll or (not (GuildWeaveOwnProfile and GuildWeaveOwnProfile.skipProfessions)
         and (not GuildWeaveOwnProfile or not GuildWeaveOwnProfile.prof1)) then
-        table.insert(steps, { id = "professions", render = RenderProfessions, onNext = OnNextProfessions })
+        table.insert(steps, { id = "professions", render = RenderProfessions, onNext = OnNextProfessions, frameH = 355 })
     end
 end
 

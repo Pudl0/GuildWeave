@@ -2,8 +2,7 @@
 -- Tabbed officer panel: Rules (read/write for officers, read-only for members),
 -- Inactive Members, Members (roster overview with Discord/professions columns),
 -- and Discord (Discord-handle-to-alts overview) — the latter three officer-only.
--- Frame shell defined in OfficerPanel.xml, tab bar built by
--- GuildWeave.Shared.CreateTabSwitcher.
+-- Frame is built in BuildPanel(); tab bar by GuildWeave.Shared.CreateTabSwitcher.
 
 GuildWeave.OfficerPanel = {}
 local OfficerPanel = GuildWeave.OfficerPanel
@@ -30,11 +29,11 @@ local function BuildRulesTab(rc)
     local officer = IsOfficer()
 
     local ruleDefs = {
-        { label = "Block mailbox usage",             dbKey = "mailRule" },
-        { label = "Block auction house",             dbKey = "auctionHouseRule" },
-        { label = "Block trade with non-members",    dbKey = "tradeRule" },
-        { label = "Block grouping with non-members", dbKey = "groupingRule" },
-        { label = "Auto-decline duels",              dbKey = nil },
+        { key = "mail",  label = Localization["OFFICER_RULE_MAIL"],  dbKey = "mailRule" },
+        { key = "ah",    label = Localization["OFFICER_RULE_AH"],    dbKey = "auctionHouseRule" },
+        { key = "trade", label = Localization["OFFICER_RULE_TRADE"], dbKey = "tradeRule" },
+        { key = "group", label = Localization["OFFICER_RULE_GROUP"], dbKey = "groupingRule" },
+        { key = "duel",  label = Localization["OFFICER_RULE_DUEL"],  dbKey = nil },
     }
 
     local checkboxes = {}
@@ -59,7 +58,7 @@ local function BuildRulesTab(rc)
             cblbl:SetTextColor(0.5, 0.5, 0.5, 1)
         end
 
-        checkboxes[rule.label] = cb
+        checkboxes[rule.key] = cb
         yOff = yOff - 30
     end
 
@@ -67,7 +66,7 @@ local function BuildRulesTab(rc)
     yOff = yOff - 10
     local capLbl = rc:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     capLbl:SetPoint("TOPLEFT", rc, "TOPLEFT", 8, yOff)
-    capLbl:SetText("Current level cap:")
+    capLbl:SetText(Localization["OFFICER_CAP_LABEL"])
     if not officer then capLbl:SetTextColor(0.5, 0.5, 0.5, 1) end
 
     local capEb = CreateFrame("EditBox", nil, rc, BackdropTemplateMixin and "BackdropTemplate")
@@ -89,25 +88,25 @@ local function BuildRulesTab(rc)
         local notice = rc:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
         notice:SetPoint("TOPLEFT", rc, "TOPLEFT", 8, yOff)
         notice:SetTextColor(0.6, 0.6, 0.6, 1)
-        notice:SetText("View only — officer access required to change rules")
+        notice:SetText(Localization["OFFICER_VIEW_ONLY"])
     end
 
     if officer then
         local updateBtn = CreateFrame("Button", nil, rc, "UIPanelButtonTemplate")
         updateBtn:SetSize(140, 26)
         updateBtn:SetPoint("BOTTOM", rc, "BOTTOM", 0, 10)
-        updateBtn:SetText("Update Guild Info")
+        updateBtn:SetText(Localization["OFFICER_UPDATE_BTN"])
         updateBtn:SetScript("OnClick", function()
             local cap = tonumber(capEb:GetText()) or 0
             GuildWeave:WriteGuildInfo(
-                checkboxes["Block mailbox usage"]:GetChecked(),
-                checkboxes["Block auction house"]:GetChecked(),
-                checkboxes["Block trade with non-members"]:GetChecked(),
-                checkboxes["Block grouping with non-members"]:GetChecked(),
+                checkboxes.mail:GetChecked(),
+                checkboxes.ah:GetChecked(),
+                checkboxes.trade:GetChecked(),
+                checkboxes.group:GetChecked(),
                 cap
             )
             GuildWeaveDB = GuildWeaveDB or {}
-            GuildWeaveDB.auto_decline_duels = checkboxes["Auto-decline duels"]:GetChecked() == true
+            GuildWeaveDB.auto_decline_duels = checkboxes.duel:GetChecked() == true
         end)
     end
 end
@@ -154,10 +153,10 @@ end
 
 local function BuildMembersTab(mc)
     local MCOLS = {
-        { label = "Name",    x = 0,   w = 110 },
-        { label = "Level",   x = 114, w = 40  },
-        { label = "Discord", x = 158, w = 130 },
-        { label = "Professions", x = 292, w = 152 },
+        { label = Localization["LBL_NAME"],        x = 0,   w = 110 },
+        { label = Localization["LBL_LEVEL"],       x = 114, w = 40  },
+        { label = Localization["LBL_DISCORD"],     x = 158, w = 130 },
+        { label = Localization["LBL_PROFESSIONS"], x = 292, w = 152 },
     }
     for _, col in ipairs(MCOLS) do
         local hdr = mc:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -177,7 +176,7 @@ local function BuildMembersTab(mc)
     local mFilterBtn = CreateFrame("Button", nil, mc, "UIPanelButtonTemplate")
     mFilterBtn:SetSize(70, 22)
     mFilterBtn:SetPoint("BOTTOMRIGHT", mc, "BOTTOMRIGHT", -4, 8)
-    mFilterBtn:SetText("Filter")
+    mFilterBtn:SetText(Localization["LBL_FILTER"])
     mFilterBtn:SetScript("OnClick", function()
         local fp = OfficerPanel.tabFilterPanels and OfficerPanel.tabFilterPanels.members
         if fp then fp:SetShown(not fp:IsShown()) end
@@ -331,9 +330,9 @@ end
 
 local function BuildDiscordTab(dc)
     local DCOLS = {
-        { label = "Discord",    x = 0,   w = 150 },
-        { label = "Chars",      x = 154, w = 42  },
-        { label = "Characters", x = 200, w = 250 },
+        { label = Localization["LBL_DISCORD"],    x = 0,   w = 150 },
+        { label = Localization["LBL_CHARS"],      x = 154, w = 42  },
+        { label = Localization["LBL_CHARACTERS"], x = 200, w = 250 },
     }
     for _, col in ipairs(DCOLS) do
         local hdr = dc:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -353,7 +352,7 @@ local function BuildDiscordTab(dc)
     local dFilterBtn = CreateFrame("Button", nil, dc, "UIPanelButtonTemplate")
     dFilterBtn:SetSize(70, 22)
     dFilterBtn:SetPoint("BOTTOMRIGHT", dc, "BOTTOMRIGHT", -4, 8)
-    dFilterBtn:SetText("Filter")
+    dFilterBtn:SetText(Localization["LBL_FILTER"])
     dFilterBtn:SetScript("OnClick", function()
         local fp = OfficerPanel.tabFilterPanels and OfficerPanel.tabFilterPanels.discord
         if fp then fp:SetShown(not fp:IsShown()) end
@@ -444,12 +443,19 @@ end
 -- ── Frame ─────────────────────────────────────────────────────────────────────
 
 local function BuildPanel()
-    local f       = GuildWeaveOfficerPanel
     local officer = IsOfficer()
 
-    f:SetBackdrop(GuildWeave.Constants.BACKDROP)
-    f:SetBackdropColor(0.05, 0.05, 0.05, 0.97)
-    f:SetBackdropBorderColor(0.6, 0.6, 0.6, 1)
+    local f = CreateFrame("Frame", "GuildWeaveOfficerPanel", UIParent, "BackdropTemplate")
+    f:SetSize(OfficerPanel.PANEL_W, OfficerPanel.PANEL_H)
+    f:SetFrameStrata("DIALOG")
+    f:SetPoint("CENTER", UIParent, "CENTER")
+    f:SetMovable(true)
+    f:EnableMouse(true)
+    f:Hide()
+
+    f:SetBackdrop(GuildWeave.Constants.PANEL_BACKDROP)
+    f:SetBackdropColor(0.07, 0.07, 0.07, 0.96)
+    f:SetBackdropBorderColor(0.45, 0.45, 0.45, 1)
     f:RegisterForDrag("LeftButton")
     f:SetScript("OnDragStart", f.StartMoving)
     f:SetScript("OnDragStop", function(self)
@@ -459,32 +465,48 @@ local function BuildPanel()
     GuildWeave:RestoreFramePosition(f, "officerpanel_position")
     GuildWeave:RegisterFrameForEscape(f)
 
-    local title = _G["GuildWeaveOfficerPanelTitle"]
-    title:SetText("GuildWeave — Officer Panel")
+    -- Title bar
+    local titleBg = f:CreateTexture(nil, "BACKGROUND")
+    titleBg:SetPoint("TOPLEFT",  f, "TOPLEFT",   4, -4)
+    titleBg:SetPoint("TOPRIGHT", f, "TOPRIGHT", -4, -4)
+    titleBg:SetHeight(OfficerPanel.TITLE_H - 4)
+    titleBg:SetColorTexture(0.12, 0.12, 0.12, 1)
+
+    local titleIcon = f:CreateTexture(nil, "OVERLAY")
+    titleIcon:SetSize(18, 18)
+    titleIcon:SetPoint("LEFT", titleBg, "LEFT", 6, 0)
+    titleIcon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
+
+    local title = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    title:SetPoint("LEFT", titleIcon, "RIGHT", 4, 0)
+    title:SetText(Localization["OFFICER_PANEL_TITLE"])
     title:SetTextColor(1, 0.82, 0, 1)
 
-    _G["GuildWeaveOfficerPanelCloseBtn"]:SetScript("OnClick", function() f:Hide() end)
+    local closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+    closeBtn:SetSize(20, 20)
+    closeBtn:SetPoint("TOPRIGHT", f, "TOPRIGHT", -2, -2)
+    closeBtn:SetScript("OnClick", function() f:Hide() end)
 
     local tabDefs = {
-        { id = "rules", label = "Rules" },
+        { id = "rules", label = Localization["OFFICER_TAB_RULES"] },
     }
     if officer then
         table.insert(tabDefs, {
-            id = "inactive", label = "Inactive Members",
+            id = "inactive", label = Localization["OFFICER_TAB_INACTIVE"],
             onSelected = function()
                 C_GuildInfo.GuildRoster()
                 C_Timer.After(0.3, OfficerPanel.RefreshInactive)
             end,
         })
         table.insert(tabDefs, {
-            id = "members", label = "Members",
+            id = "members", label = Localization["OFFICER_TAB_MEMBERS"],
             onSelected = function()
                 C_GuildInfo.GuildRoster()
                 C_Timer.After(0.3, OfficerPanel.RefreshMembers)
             end,
         })
         table.insert(tabDefs, {
-            id = "discord", label = "Discord",
+            id = "discord", label = Localization["OFFICER_TAB_DISCORD"],
             onSelected = function()
                 C_GuildInfo.GuildRoster()
                 C_Timer.After(0.3, OfficerPanel.RefreshDiscordHandles)

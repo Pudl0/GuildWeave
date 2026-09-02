@@ -45,6 +45,7 @@ Localization["DEATH_CAUSE_LAVA"]     = "Lava"
 Localization["DEATH_CAUSE_SLIME"]    = "Schleim"
 
 Localization["DEATH_ANNOUNCEMENT_HEADER"] = "Schande!"
+Localization["DEATH_SMALL_MSG"]           = "%s ist gestorben."
 
 -- ── Level-up messages ────────────────────────────────────────────────────────
 Localization["LEVELUP_MSG"] = "%s hat Level %s erreicht! Herzlichen Glückwunsch!"
@@ -79,7 +80,7 @@ Localization["WIZARD_ROLE_PROMPT"]      = "Welche Rolle(n) spielst du? (alle zut
 Localization["WIZARD_ROLE_REQUIRED"]    = "Bitte mindestens eine Rolle auswählen."
 Localization["WIZARD_PROF_PROMPT"]      = "Deine Berufe (erkannt oder manuell eingeben):"
 Localization["WIZARD_PROF_LABEL"]       = "Beruf %d:"
-Localization["WIZARD_PROF_SKIP"]        = "Überspringen (keine Berufe)"
+Localization["WIZARD_PROF_SKIP"]        = "Überspringen"
 
 -- ── Options panel ────────────────────────────────────────────────────────────
 Localization["OPTIONS_TAB_GENERAL"]      = "Allgemein"
@@ -99,6 +100,8 @@ Localization["OPTIONS_PVP_SND_DESC"]     = "Aktiviert den Ton für die PVP Warnu
 Localization["OPTIONS_DEATH_GROUP"]      = "Todesmeldungen"
 Localization["OPTIONS_DEATH_EN_DESC"]    = "Aktiviert die Todesmeldungen"
 Localization["OPTIONS_DEATH_SND_DESC"]   = "Aktiviert den Ton für die Todesmeldungen"
+Localization["OPTIONS_DEATH_SMALL_NAME"] = "Kompakte Ansicht"
+Localization["OPTIONS_DEATH_SMALL_DESC"] = "Zeigt Todesmeldungen anderer immer als kompaktes Fenster an, nicht nur während du in einer Instanz bist"
 Localization["OPTIONS_LEVELUP_GROUP"]    = "Level-Up Meldungen"
 Localization["OPTIONS_LEVELUP_EN_DESC"]  = "Aktiviert die Level-Up Meldungen"
 Localization["OPTIONS_LEVELUP_SND_DESC"] = "Aktiviert den Ton für die Level-Up Meldungen"
@@ -181,11 +184,60 @@ Localization["POPUPEDIT_SAVE_BTN"] = "Speichern & Beenden"
 Localization["POPUPEDIT_ENABLED"]  = "Popup-Bearbeitungsmodus aktiv: Ziehe die Platzhalter, um Positionen zu speichern."
 Localization["POPUPEDIT_DISABLED"] = "Popup-Bearbeitungsmodus beendet."
 
--- ── Offizier-Panel: Mitglieder-/Discord-Tabs ────────────────────────────────
+-- ── Offizier-Panel ──────────────────────────────────────────────────────────
+Localization["OFFICER_PANEL_TITLE"]        = "Offizier Panel"
 Localization["OFFICER_MEMBERS_NONE_FOUND"] = "Keine Mitglieder gefunden."
 Localization["OFFICER_DISCORD_NONE_FOUND"] = "Keine Discord Handles in den Profilen gefunden."
 Localization["CONTEXTMENU_SET_DEATHSET"]   = "Deathcounter setzen"
 Localization["DEATHSET_DIALOG_TEXT"]       = "Deathcounter für %s setzen:"
+
+-- ── Gemeinsame UI-Beschriftungen ────────────────────────────────────────────
+Localization["LBL_NAME"]          = "Name"
+Localization["LBL_LVL"]           = "Lvl"
+Localization["LBL_LEVEL"]         = "Level"
+Localization["LBL_ZONE"]          = "Zone"
+Localization["LBL_DISCORD"]       = "Discord"
+Localization["LBL_FILTER"]        = "Filter"
+Localization["LBL_OFFLINE"]       = "Offline"
+Localization["LBL_PROFESSIONS"]   = "Berufe"
+Localization["LBL_CHARS"]         = "Chars"
+Localization["LBL_CHARACTERS"]    = "Charaktere"
+Localization["LBL_NAME_COLON"]    = "Name:"
+Localization["LBL_ZONE_COLON"]    = "Zone:"
+Localization["LBL_LEVEL_COLON"]   = "Level:"
+Localization["LBL_DISCORD_COLON"] = "Discord:"
+Localization["LBL_SKILL_COLON"]   = "Skill:"
+Localization["LBL_VERSION_COLON"] = "Version:"
+
+-- ── Offizier-Panel: Tabs & Regeln ───────────────────────────────────────────
+Localization["OFFICER_TAB_RULES"]    = "Regeln"
+Localization["OFFICER_TAB_INACTIVE"] = "Inaktiv"
+Localization["OFFICER_TAB_MEMBERS"]  = "Mitglieder"
+Localization["OFFICER_TAB_DISCORD"]  = "Discord"
+Localization["OFFICER_RULE_MAIL"]    = "Briefkasten sperren"
+Localization["OFFICER_RULE_AH"]      = "Auktionshaus sperren"
+Localization["OFFICER_RULE_TRADE"]   = "Handel mit Nicht-Mitgliedern sperren"
+Localization["OFFICER_RULE_GROUP"]   = "Gruppen mit Nicht-Mitgliedern sperren"
+Localization["OFFICER_RULE_DUEL"]    = "Duelle automatisch ablehnen"
+Localization["OFFICER_CAP_LABEL"]    = "Aktuelles Level Cap:"
+Localization["OFFICER_VIEW_ONLY"]    = "Nur Ansicht – Offiziersrechte nötig, um Regeln zu ändern"
+Localization["OFFICER_UPDATE_BTN"]   = "Gildeninfo aktualisieren"
+
+-- ── Minimap-Tooltip ─────────────────────────────────────────────────────────
+Localization["MINIMAP_LEFT"]       = "Linksklick: Gilde anzeigen"
+Localization["MINIMAP_SHIFT_LEFT"] = "Shift+Linksklick: Tode anzeigen"
+Localization["MINIMAP_RIGHT"]      = "Rechtsklick: Offizier Panel"
+
+-- ── Regeln / Gildeninfo ─────────────────────────────────────────────────────
+Localization["RULES_LOADED"]             = "Regeln geladen."
+Localization["RULES_GUILD_INFO_UPDATED"] = "Gildeninfo mit neuen Regeln aktualisiert."
+
+-- ── Popup-Bearbeitungsmodus: Platzhalter-Beschriftungen ─────────────────────
+Localization["POPUPEDIT_LBL_GENERIC"]    = "Popup"
+Localization["POPUPEDIT_LBL_DEATH"]      = "Todesmeldung"
+Localization["POPUPEDIT_LBL_SMALLDEATH"] = "Kompakte Todesmeldung"
+Localization["POPUPEDIT_LBL_LEVELUP"]    = "Level-Up"
+Localization["POPUPEDIT_LBL_PVP"]        = "PvP-Warnung"
 
 -- ── Debug test data ──────────────────────────────────────────────────────────
 Localization["DEBUG_TEST_CLASSES"] = {"Krieger", "Magier", "Schamane", "Jäger"}

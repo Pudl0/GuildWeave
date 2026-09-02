@@ -1,7 +1,6 @@
 -- GuildPanel/GuildPanel.lua
 -- Guild member panel: namespace, data, rows, main frame, and filter panel.
--- GuildWeaveGuildPanel is declared in GuildPanel.xml; the filter panel and
--- profession dropdown are created here in Lua.
+-- The panel, its title bar, and the filter flyout are all built here in Lua.
 
 GuildWeave.GuildPanel = {}
 local GP = GuildWeave.GuildPanel
@@ -13,12 +12,12 @@ GP.TITLE_H    = 26
 GP.COL_H      = 16
 
 GP.COLUMNS = {
-    { label = "Name",                          width = 120 },
-    { label = "Lvl",                           width = 26  },
-    { label = Localization["PANEL_COL_RANK"],  width = 84  },
-    { label = "Zone",                          width = 90  },
-    { label = Localization["PANEL_COL_ROLE"],  width = 55  },
-    { label = Localization["PANEL_COL_DEATHS"],width = 35  },
+    { label = Localization["LBL_NAME"],         width = 120 },
+    { label = Localization["LBL_LVL"],          width = 26  },
+    { label = Localization["PANEL_COL_RANK"],   width = 84  },
+    { label = Localization["LBL_ZONE"],         width = 90  },
+    { label = Localization["PANEL_COL_ROLE"],   width = 55  },
+    { label = Localization["PANEL_COL_DEATHS"], width = 35  },
 }
 
 local ROLE_ABBREV = { Tank = "T", Heal = "H", DPS = "D" }
@@ -158,7 +157,7 @@ function GP.ShowMemberTooltip(anchor, entry)
         entry.rank ~= "" and entry.rank or "-",
         0.65, 0.65, 0.65, 1, 1, 1)
     if entry.zone ~= "" then
-        GameTooltip:AddDoubleLine("Zone:", GuildWeave:SanitizeText(entry.zone), 0.65, 0.65, 0.65, 1, 1, 1)
+        GameTooltip:AddDoubleLine(Localization["LBL_ZONE_COLON"], GuildWeave:SanitizeText(entry.zone), 0.65, 0.65, 0.65, 1, 1, 1)
     end
 
     local safeNote = entry.note ~= "" and GuildWeave:SanitizeText(entry.note) or nil
@@ -171,7 +170,7 @@ function GP.ShowMemberTooltip(anchor, entry)
     if hasProfile then
         GameTooltip:AddLine(" ")
         if entry.role    ~= "" then GameTooltip:AddDoubleLine(Localization["PANEL_TIP_ROLE"],  entry.role,    0.65, 0.65, 0.65, 1,    1,    1)   end
-        if entry.discord ~= "" then GameTooltip:AddDoubleLine("Discord:",                      GuildWeave:SanitizeText(entry.discord), 0.65, 0.65, 0.65, 0.55, 0.55, 0.9) end
+        if entry.discord ~= "" then GameTooltip:AddDoubleLine(Localization["LBL_DISCORD_COLON"],           GuildWeave:SanitizeText(entry.discord), 0.65, 0.65, 0.65, 0.55, 0.55, 0.9) end
         if entry.prof1         then GameTooltip:AddDoubleLine(Localization["PANEL_TIP_PROF1"], entry.prof1,   0.65, 0.65, 0.65, 0.9,  0.75, 0.4) end
         if entry.prof2         then GameTooltip:AddDoubleLine(Localization["PANEL_TIP_PROF2"], entry.prof2,   0.65, 0.65, 0.65, 0.9,  0.75, 0.4) end
     end
@@ -225,8 +224,12 @@ function GuildWeave.GuildPanel:Create()
 
     GP.FRAME_W = TotalColWidth() + GP.PAD_X + 8
 
-    local f = GuildWeaveGuildPanel
+    local f = CreateFrame("Frame", GP.PANEL_NAME, UIParent, "BackdropTemplate")
     f:SetSize(GP.FRAME_W, GP.FRAME_H)
+    f:SetFrameStrata("MEDIUM")
+    f:SetMovable(true)
+    f:EnableMouse(true)
+    f:Hide()
     f:SetBackdrop(BACKDROP)
     f:SetBackdropColor(0.07, 0.07, 0.07, 0.96)
     f:SetBackdropBorderColor(0.45, 0.45, 0.45, 1)
@@ -238,24 +241,62 @@ function GuildWeave.GuildPanel:Create()
         GuildWeave:SaveFramePosition(self, "guildpanel_position")
     end)
 
+    f:SetPoint("CENTER", UIParent, "CENTER")
     GuildWeave:RestoreFramePosition(f, "guildpanel_position")
 
-    GuildWeaveGuildPanelTitleBg:SetHeight(GP.TITLE_H - 4)
-    GuildWeaveGuildPanelTitleIcon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
-    GuildWeaveGuildPanelTitleText:SetText(GuildWeave.name)
-    GuildWeaveGuildPanelTitleText:SetTextColor(1, 0.82, 0, 1)
-    GuildWeaveGuildPanelCountLabel:SetTextColor(0.6, 0.6, 0.6, 1)
-    self.countLabel = GuildWeaveGuildPanelCountLabel
+    -- Title bar
+    local titleBg = f:CreateTexture(nil, "BACKGROUND")
+    titleBg:SetPoint("TOPLEFT",  f, "TOPLEFT",   4, -4)
+    titleBg:SetPoint("TOPRIGHT", f, "TOPRIGHT", -4, -4)
+    titleBg:SetHeight(GP.TITLE_H - 4)
+    titleBg:SetColorTexture(0.12, 0.12, 0.12, 1)
+
+    local titleIcon = f:CreateTexture(nil, "OVERLAY")
+    titleIcon:SetSize(18, 18)
+    titleIcon:SetPoint("LEFT", titleBg, "LEFT", 4, 0)
+    titleIcon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
+
+    local titleText = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    titleText:SetPoint("LEFT", titleIcon, "RIGHT", 4, 0)
+    titleText:SetText(GuildWeave.name)
+    titleText:SetTextColor(1, 0.82, 0, 1)
+
+    local countLabel = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    countLabel:SetPoint("RIGHT", titleBg, "RIGHT", -28, 0)
+    countLabel:SetTextColor(0.6, 0.6, 0.6, 1)
+    self.countLabel = countLabel
+
+    -- Divider under the column-header row
+    local divider = f:CreateTexture(nil, "ARTWORK")
+    divider:SetHeight(1)
+    divider:SetColorTexture(0.4, 0.4, 0.4, 0.7)
+    divider:SetPoint("TOPLEFT",  f, "TOPLEFT",   8, -45)
+    divider:SetPoint("TOPRIGHT", f, "TOPRIGHT", -8, -45)
+
+    local closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
+    closeBtn:SetSize(20, 20)
+    closeBtn:SetPoint("TOPRIGHT", f, "TOPRIGHT", -2, -2)
+    closeBtn:SetScript("OnClick", function()
+        f:Hide()
+        if GuildWeave.GuildPanel.filterPanel    then GuildWeave.GuildPanel.filterPanel:Hide()    end
+        if GuildWeave.GuildPanel.filterProfList then GuildWeave.GuildPanel.filterProfList:Hide() end
+    end)
+
+    local filterBtn = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
+    filterBtn:SetSize(70, 20)
+    filterBtn:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -8, 6)
+    filterBtn:SetText(Localization["LBL_FILTER"])
+    filterBtn:SetScript("OnClick", function() GuildWeave.GuildPanel:ToggleFilterPanel() end)
 
     -- Hide-offline toggle (stateful button)
     local hideBtn = CreateFrame("Button", nil, f)
     hideBtn:SetSize(50, GP.TITLE_H - 4)
-    hideBtn:SetPoint("RIGHT", GuildWeaveGuildPanelCountLabel, "LEFT", -6, 0)
+    hideBtn:SetPoint("RIGHT", countLabel, "LEFT", -6, 0)
     hideBtn:EnableMouse(true)
     local hideLbl = hideBtn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hideLbl:SetAllPoints()
     hideLbl:SetJustifyH("RIGHT")
-    hideLbl:SetText("Offline")
+    hideLbl:SetText(Localization["LBL_OFFLINE"])
     local function UpdateHideBtnColor()
         hideLbl:SetTextColor(
             GP.hideOffline and 1 or 0.45, GP.hideOffline and 0.82 or 0.45, GP.hideOffline and 0 or 0.45, 1)
@@ -264,15 +305,6 @@ function GuildWeave.GuildPanel:Create()
     hideBtn:SetScript("OnClick",  function() GP.hideOffline = not GP.hideOffline; UpdateHideBtnColor(); GuildWeave.GuildPanel:Refresh() end)
     hideBtn:SetScript("OnEnter", function() hideLbl:SetTextColor(1, 1, 0.7, 1) end)
     hideBtn:SetScript("OnLeave", UpdateHideBtnColor)
-
-    GuildWeaveGuildPanelCloseBtn:SetScript("OnClick", function()
-        f:Hide()
-        if GuildWeave.GuildPanel.filterPanel    then GuildWeave.GuildPanel.filterPanel:Hide()    end
-        if GuildWeave.GuildPanel.filterProfList then GuildWeave.GuildPanel.filterProfList:Hide() end
-    end)
-
-    GuildWeaveGuildPanelFilterBtn:SetText("Filter")
-    GuildWeaveGuildPanelFilterBtn:SetScript("OnClick", function() GuildWeave.GuildPanel:ToggleFilterPanel() end)
 
     -- Column headers (dynamic — loop over COLUMNS)
     self.headerBtns = {}
@@ -306,7 +338,9 @@ function GuildWeave.GuildPanel:Create()
         xOff = xOff + col.width
     end
 
-    local scrollFrame = GuildWeaveGuildPanelScroll
+    local scrollFrame = CreateFrame("ScrollFrame", nil, f)
+    scrollFrame:SetPoint("TOPLEFT",     f, "TOPLEFT",      8, -48)
+    scrollFrame:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -8,  30)
     scrollFrame:EnableMouseWheel(true)
     scrollFrame:SetScript("OnMouseWheel", function(sf, delta)
         local step = GP.ROW_H * 3
@@ -449,12 +483,12 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
 
     local titleLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     titleLbl:SetPoint("TOPLEFT", fp, "TOPLEFT", PAD, -PAD)
-    titleLbl:SetText("Filter")
+    titleLbl:SetText(Localization["LBL_FILTER"])
     titleLbl:SetTextColor(1, 0.82, 0, 1)
 
     local nameLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     nameLbl:SetPoint("TOPLEFT", titleLbl, "BOTTOMLEFT", 0, -10)
-    nameLbl:SetText("Name:")
+    nameLbl:SetText(Localization["LBL_NAME_COLON"])
     nameLbl:SetTextColor(0.8, 0.8, 0.8, 1)
 
     local nameEB = CreateFrame("EditBox", nil, fp, BackdropTemplateMixin and "BackdropTemplate")

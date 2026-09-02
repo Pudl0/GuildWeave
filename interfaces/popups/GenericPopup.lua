@@ -1,12 +1,27 @@
 -- GenericPopup.lua
--- Rule-block and cap notification popup. Frame defined in GenericPopup.xml.
+-- Rule-block and cap notification popup.
 
 GuildWeave.Popup = {}
 
-local frame   = GuildWeavePopupFrame
-local icon    = _G["GuildWeavePopupFrameIcon"]
-local title   = _G["GuildWeavePopupFrameTitle"]
-local message = _G["GuildWeavePopupFrameMessage"]
+local frame = CreateFrame("Frame", "GuildWeavePopupFrame", UIParent, "BackdropTemplate")
+frame:SetSize(370, 160)
+frame:SetFrameStrata("DIALOG")
+frame:SetMovable(true)
+frame:EnableMouse(true)
+frame:Hide()
+
+local icon = frame:CreateTexture(nil, "ARTWORK")
+icon:SetSize(40, 40)
+icon:SetPoint("TOP", frame, "TOP", 0, -30)
+
+local title = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+title:SetPoint("TOP", icon, "BOTTOM", 0, -5)
+
+local message = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+message:SetSize(320, 0)
+message:SetJustifyH("CENTER")
+message:SetPoint("TOP", title, "BOTTOM", 0, -5)
+
 local activeTimer
 
 frame:SetBackdrop(GuildWeave.Constants.BACKDROP)

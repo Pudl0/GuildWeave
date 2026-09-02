@@ -3,6 +3,7 @@
 
 local LDB    = LibStub("LibDataBroker-1.1", true)
 local DBIcon = LibStub("LibDBIcon-1.0", true)
+local Localization = GuildWeave.Localization
 
 if LDB then
     GuildWeave.minimapDataObject = LDB:NewDataObject("GuildWeave", {
@@ -25,11 +26,11 @@ if LDB then
         OnEnter = function(selfFrame)
             GameTooltip:SetOwner(selfFrame, "ANCHOR_RIGHT")
             GameTooltip:AddLine("GuildWeave", 1, 0.7, 0.9)
-            GameTooltip:AddLine("Version: " .. (GuildWeave.version or "Unknown"), 1, 1, 1)
-            GameTooltip:AddLine("Left-click: Show guild panel", 1, 1, 1)
-            GameTooltip:AddLine("Shift+Left-click: Show death log", 0.8, 0.8, 0.8)
+            GameTooltip:AddLine(Localization["LBL_VERSION_COLON"] .. " " .. (GuildWeave.version or Localization["DEATH_UNKNOWN"]), 1, 1, 1)
+            GameTooltip:AddLine(Localization["MINIMAP_LEFT"], 1, 1, 1)
+            GameTooltip:AddLine(Localization["MINIMAP_SHIFT_LEFT"], 0.8, 0.8, 0.8)
             if IsInGuild() then
-                GameTooltip:AddLine("Right-click: Officer panel", 0.8, 0.8, 0.8)
+                GameTooltip:AddLine(Localization["MINIMAP_RIGHT"], 0.8, 0.8, 0.8)
             end
             GameTooltip:Show()
         end,

@@ -47,6 +47,8 @@ Localization["DEATH_CAUSE_LAVA"]     = "Lava"
 Localization["DEATH_CAUSE_SLIME"]    = "Slime"
 
 Localization["DEATH_ANNOUNCEMENT_HEADER"] = "Shame!"
+-- Compact death notice (shown top-right in instances). Format: name
+Localization["DEATH_SMALL_MSG"]           = "%s died."
 
 -- ── Level-up messages ────────────────────────────────────────────────────────
 -- Format: playerDisplay, level
@@ -90,7 +92,7 @@ Localization["WIZARD_ROLE_REQUIRED"]    = "Please select at least one role."
 Localization["WIZARD_PROF_PROMPT"]      = "Your professions (auto-detected or enter manually):"
 -- Format: slot number
 Localization["WIZARD_PROF_LABEL"]       = "Profession %d:"
-Localization["WIZARD_PROF_SKIP"]        = "Skip (no professions)"
+Localization["WIZARD_PROF_SKIP"]        = "Skip"
 
 -- ── Options panel ────────────────────────────────────────────────────────────
 Localization["OPTIONS_TAB_GENERAL"]      = "General"
@@ -110,6 +112,8 @@ Localization["OPTIONS_PVP_SND_DESC"]     = "Enables the sound for the PvP warnin
 Localization["OPTIONS_DEATH_GROUP"]      = "Death Messages"
 Localization["OPTIONS_DEATH_EN_DESC"]    = "Enables death messages"
 Localization["OPTIONS_DEATH_SND_DESC"]   = "Enables the sound for death messages"
+Localization["OPTIONS_DEATH_SMALL_NAME"] = "Compact view"
+Localization["OPTIONS_DEATH_SMALL_DESC"] = "Always show other players' death messages as a small notice, not only while you are in an instance"
 Localization["OPTIONS_LEVELUP_GROUP"]    = "Level-Up Messages"
 Localization["OPTIONS_LEVELUP_EN_DESC"]  = "Enables level-up messages"
 Localization["OPTIONS_LEVELUP_SND_DESC"] = "Enables the sound for level-up messages"
@@ -190,7 +194,8 @@ Localization["POPUPEDIT_SAVE_BTN"] = "Save & Exit"
 Localization["POPUPEDIT_ENABLED"]  = "Popup edit mode active: drag the placeholders to save their positions."
 Localization["POPUPEDIT_DISABLED"] = "Popup edit mode exited."
 
--- ── Officer panel: Members / Discord tabs ───────────────────────────────────
+-- ── Officer panel ───────────────────────────────────────────────────────────
+Localization["OFFICER_PANEL_TITLE"]        = "Officer Panel"
 Localization["OFFICER_MEMBERS_NONE_FOUND"] = "No members found."
 Localization["OFFICER_DISCORD_NONE_FOUND"] = "No Discord handles found in profiles."
 -- Format: target name
@@ -205,6 +210,54 @@ Localization["DEATHSET_INVALID"]  = "Value must be between 0 and 999999."
 Localization["DEATHSET_SENT"]     = "Death counter update sent to %s."
 -- Format: new value
 Localization["DEATHSET_RECEIVED"] = "Death counter set to %d by an officer."
+
+-- ── Shared UI labels ─────────────────────────────────────────────────────────
+Localization["LBL_NAME"]          = "Name"
+Localization["LBL_LVL"]           = "Lvl"
+Localization["LBL_LEVEL"]         = "Level"
+Localization["LBL_ZONE"]          = "Zone"
+Localization["LBL_DISCORD"]       = "Discord"
+Localization["LBL_FILTER"]        = "Filter"
+Localization["LBL_OFFLINE"]       = "Offline"
+Localization["LBL_PROFESSIONS"]   = "Professions"
+Localization["LBL_CHARS"]         = "Chars"
+Localization["LBL_CHARACTERS"]    = "Characters"
+Localization["LBL_NAME_COLON"]    = "Name:"
+Localization["LBL_ZONE_COLON"]    = "Zone:"
+Localization["LBL_LEVEL_COLON"]   = "Level:"
+Localization["LBL_DISCORD_COLON"] = "Discord:"
+Localization["LBL_SKILL_COLON"]   = "Skill:"
+Localization["LBL_VERSION_COLON"] = "Version:"
+
+-- ── Officer panel: tabs & rules ─────────────────────────────────────────────
+Localization["OFFICER_TAB_RULES"]    = "Rules"
+Localization["OFFICER_TAB_INACTIVE"] = "Inactive"
+Localization["OFFICER_TAB_MEMBERS"]  = "Members"
+Localization["OFFICER_TAB_DISCORD"]  = "Discord"
+Localization["OFFICER_RULE_MAIL"]    = "Block mailbox usage"
+Localization["OFFICER_RULE_AH"]      = "Block auction house"
+Localization["OFFICER_RULE_TRADE"]   = "Block trade with non-members"
+Localization["OFFICER_RULE_GROUP"]   = "Block grouping with non-members"
+Localization["OFFICER_RULE_DUEL"]    = "Auto-decline duels"
+Localization["OFFICER_CAP_LABEL"]    = "Current level cap:"
+Localization["OFFICER_VIEW_ONLY"]    = "View only — officer access required to change rules"
+Localization["OFFICER_UPDATE_BTN"]   = "Update Guild Info"
+
+-- ── Minimap tooltip ─────────────────────────────────────────────────────────
+Localization["MINIMAP_LEFT"]       = "Left-click: Show guild panel"
+Localization["MINIMAP_SHIFT_LEFT"] = "Shift+Left-click: Show death log"
+Localization["MINIMAP_RIGHT"]      = "Right-click: Officer panel"
+
+-- ── Rules / guild info ──────────────────────────────────────────────────────
+Localization["RULES_LOADED"]             = "Rules loaded."
+Localization["RULES_GUILD_INFO_UPDATED"] = "Guild info updated with new rules."
+
+-- ── Popup edit mode: placeholder labels ─────────────────────────────────────
+Localization["POPUPEDIT_LBL_GENERIC"]    = "Generic Popup"
+Localization["POPUPEDIT_LBL_DEATH"]      = "Death Announcement"
+Localization["POPUPEDIT_LBL_SMALLDEATH"] = "Compact Death"
+Localization["POPUPEDIT_LBL_LEVELUP"]    = "Level Up"
+Localization["POPUPEDIT_LBL_PVP"]        = "PvP Warning"
 
 -- ── Debug test data ──────────────────────────────────────────────────────────
 Localization["DEBUG_TEST_CLASSES"] = {"Warrior", "Mage", "Shaman", "Hunter"}

@@ -66,17 +66,26 @@ local function processDeath(data, isOwnDeath)
 	-- Update UI
 	GuildWeave:UpdateDeathlog()
 
-	-- Show death announcement popup
-	local pronoun = data.pronoun or "der"
-	local messageString
-	if data.discordHandle and data.discordHandle ~= "" then
-		messageString = string.format(Localization["DEATH_MSG_DISCORD"],
-			data.name, data.discordHandle, pronoun, data.class, data.level, data.zone)
-	else
-		messageString = string.format(Localization["DEATH_MSG"],
-			data.name, pronoun, data.class, data.level, data.zone)
+	-- Show a death announcement for other players only — your own death is
+	-- recorded in the log above but never pops an announcement at you.
+	-- Use the compact top-right notice when the viewer is inside any instance
+	-- (dungeon/raid/BG) or has opted into it, so a full-screen popup never lands mid-pull.
+	if not isOwnDeath then
+		if GuildWeaveDB["deathframe_always_small"] or IsInInstance() then
+			GuildWeave.DeathAnnouncement:ShowSmallDeathMessage(data.name)
+		else
+			local pronoun = data.pronoun or "der"
+			local messageString
+			if data.discordHandle and data.discordHandle ~= "" then
+				messageString = string.format(Localization["DEATH_MSG_DISCORD"],
+					data.name, data.discordHandle, pronoun, data.class, data.level, data.zone)
+			else
+				messageString = string.format(Localization["DEATH_MSG"],
+					data.name, pronoun, data.class, data.level, data.zone)
+			end
+			GuildWeave.DeathAnnouncement:ShowDeathMessage(messageString)
+		end
 	end
-	GuildWeave.DeathAnnouncement:ShowDeathMessage(messageString)
 end
 
 -- Public wrapper for use from other modules (e.g. Global.lua addon message handler)

@@ -7,10 +7,11 @@ local Localization = GuildWeave.Localization
 local EditMode = GuildWeave.PopupEditMode
 
 local SPECS = {
-    { label = "Generic Popup",       dbKey = "genericpopup_position",      w = 370, h = 160, point = "TOP",    x = 0, y = -150 },
-    { label = "Death Announcement",  dbKey = "deathannouncement_position", w = 380, h = 200, point = "TOP",    x = 0, y = 0 },
-    { label = "Level Up",            dbKey = "levelupannouncement_position", w = 380, h = 200, point = "TOP",  x = 0, y = 0 },
-    { label = "PvP Warning",         dbKey = "pvpwarning_position",        w = 320, h = 110, point = "CENTER", x = 0, y = 0 },
+    { label = Localization["POPUPEDIT_LBL_GENERIC"],   dbKey = "genericpopup_position",           w = 370, h = 160, point = "TOP",      x = 0,   y = -150 },
+    { label = Localization["POPUPEDIT_LBL_DEATH"],     dbKey = "deathannouncement_position",      w = 380, h = 200, point = "TOP",      x = 0,   y = 0 },
+    { label = Localization["POPUPEDIT_LBL_SMALLDEATH"],dbKey = "smalldeathannouncement_position", w = 220, h = 40,  point = "TOPRIGHT", x = -20, y = -200 },
+    { label = Localization["POPUPEDIT_LBL_LEVELUP"],   dbKey = "levelupannouncement_position",    w = 380, h = 200, point = "TOP",      x = 0,   y = 0 },
+    { label = Localization["POPUPEDIT_LBL_PVP"],       dbKey = "pvpwarning_position",             w = 320, h = 110, point = "CENTER",   x = 0,   y = 0 },
 }
 
 local overlays = {}

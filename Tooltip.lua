@@ -25,7 +25,7 @@ _G.GameTooltip:HookScript("OnTooltipSetUnit", function(self)
     if profile.discord and profile.discord ~= "" then
         local safe = GuildWeave:SanitizeText(profile.discord)
         _G.GameTooltip:AddLine(" ")
-        _G.GameTooltip:AddLine("Discord:", 0.39, 0.25, 0.65)
+        _G.GameTooltip:AddLine(Localization["LBL_DISCORD_COLON"], 0.39, 0.25, 0.65)
         _G.GameTooltip:AddLine(safe, 1, 1, 1)
     end
 

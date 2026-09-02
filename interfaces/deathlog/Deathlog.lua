@@ -1,5 +1,5 @@
 -- Deathlog.lua
--- Manages the death log window. Deathlog frame is declared in Deathlog.xml.
+-- Manages the resizable death log window.
 
 local FONT_SMALL = "GameFontNormalSmall"
 
@@ -91,7 +91,12 @@ end
 function GuildWeave:CreateDeathlog()
     if self.DeathlogFrame then return end
 
-    local frame = Deathlog
+    local frame = CreateFrame("Frame", "Deathlog", UIParent, "BackdropTemplate")
+    frame:SetFrameStrata("MEDIUM")
+    frame:SetMovable(true)
+    frame:SetResizable(true)
+    frame:EnableMouse(true)
+    frame:Hide()
 
     local savedWidth = MIN_WIDTH
     local savedHeight = MIN_HEIGHT
@@ -115,8 +120,25 @@ function GuildWeave:CreateDeathlog()
         GuildWeave:SaveFramePosition(self, "deathlog_position")
     end)
 
+    -- Header bar
+    local headerBg = frame:CreateTexture(nil, "BACKGROUND")
+    headerBg:SetPoint("TOPLEFT",  frame, "TOPLEFT",   4, -4)
+    headerBg:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -4)
+    headerBg:SetHeight(22)
+    headerBg:SetColorTexture(0.1, 0.1, 0.1, 0.8)
+
+    local titleFs = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+    titleFs:SetPoint("LEFT", headerBg, "LEFT", 20, 0)
+    titleFs:SetText(Localization["DEATHLOG_TITLE"])
+    titleFs:SetTextColor(1, 0.85, 0.1)
+
     -- Smart resize grip: supports vertical and diagonal resizing
-    local resizeGrip = DeathlogResizeGrip
+    local resizeGrip = CreateFrame("Button", nil, frame)
+    resizeGrip:SetSize(16, 16)
+    resizeGrip:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
+    resizeGrip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
+    resizeGrip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
+    resizeGrip:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Down")
     local startMouseX, startMouseY
     resizeGrip:SetScript("OnMouseDown", function(_, button)
         if button == "LeftButton" then
@@ -147,17 +169,23 @@ function GuildWeave:CreateDeathlog()
         UpdateDeathlogLayout(frame)
     end)
 
-    -- Icon: set FrameLevel relative to parent and apply circular masks
-    local iconFrame = DeathlogIcon
+    -- Decorative circular icon, top-left (portrait alpha mask on border + fill)
+    local iconFrame = CreateFrame("Frame", nil, frame)
+    iconFrame:SetSize(24, 24)
+    iconFrame:SetPoint("TOPLEFT", frame, "TOPLEFT", -6, 6)
     iconFrame:SetFrameLevel(frame:GetFrameLevel() + 2)
 
-    local iconBorder = DeathlogIconBorder
+    local iconBorder = iconFrame:CreateTexture(nil, "BORDER")
+    iconBorder:SetAllPoints(iconFrame)
+    iconBorder:SetColorTexture(0.1, 0, 0, 0.9)
     local borderMask = iconFrame:CreateMaskTexture()
     borderMask:SetAllPoints(iconBorder)
     borderMask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     iconBorder:AddMaskTexture(borderMask)
 
-    local iconBg = DeathlogIconBg
+    local iconBg = iconFrame:CreateTexture(nil, "ARTWORK")
+    iconBg:SetSize(20, 20)
+    iconBg:SetPoint("CENTER", iconFrame, "CENTER")
     iconBg:SetTexture(GuildWeave.Constants.MEDIA.MINIMAP_ICON)
     local iconMask = iconFrame:CreateMaskTexture()
     iconMask:SetPoint("CENTER")
@@ -165,19 +193,14 @@ function GuildWeave:CreateDeathlog()
     iconMask:SetTexture("Interface\\CHARACTERFRAME\\TempPortraitAlphaMask", "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
     iconBg:AddMaskTexture(iconMask)
 
-    -- Header height (width determined by XML anchors)
-    DeathlogHeaderBg:SetHeight(22)
-
-    -- Title text
-    DeathlogTitle:SetText(Localization["DEATHLOG_TITLE"])
-    DeathlogTitle:SetTextColor(1, 0.85, 0.1)
-
-    -- Column headers from XML globals
-    local headers = {"Name", Localization["DEATHLOG_COL_CLASS"], "Level"}
-    frame.columnHeaders = {DeathlogColHeader1, DeathlogColHeader2, DeathlogColHeader3}
-    for i, header in ipairs(frame.columnHeaders) do
+    -- Column headers (positioned in UpdateDeathlogLayout)
+    local headers = {Localization["LBL_NAME"], Localization["DEATHLOG_COL_CLASS"], Localization["LBL_LEVEL"]}
+    frame.columnHeaders = {}
+    for i = 1, #headers do
+        local header = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         header:SetText(headers[i])
         header:SetTextColor(1, 0.8, 0.1)
+        frame.columnHeaders[i] = header
     end
 
     -- Dynamic rows (created in Lua; count derived from MAX_HEIGHT constants)
@@ -249,12 +272,12 @@ function GuildWeave:UpdateDeathlog()
                 GameTooltip:ClearLines()
                 if entry.discordHandle then
                     local safeHandle = GuildWeave:SanitizeText(entry.discordHandle)
-                    GameTooltip:AddDoubleLine("Discord:", safeHandle, 0.8, 0.8, 0.8, 0.45, 0.63, 0.82)
+                    GameTooltip:AddDoubleLine(Localization["LBL_DISCORD_COLON"], safeHandle, 0.8, 0.8, 0.8, 0.45, 0.63, 0.82)
                 end
                 GameTooltip:AddDoubleLine(Localization["DEATHLOG_TIP_CLASS"], safeClass, 0.8, 0.8, 0.8, 1, 1, 1)
-                GameTooltip:AddDoubleLine("Level:", tostring(entry.level or "?"), 0.8, 0.8, 0.8, 1, 1, 1)
+                GameTooltip:AddDoubleLine(Localization["LBL_LEVEL_COLON"], tostring(entry.level or "?"), 0.8, 0.8, 0.8, 1, 1, 1)
                 if safeZone then
-                    GameTooltip:AddDoubleLine("Zone:", safeZone, 0.8, 0.8, 0.8, 1, 1, 1)
+                    GameTooltip:AddDoubleLine(Localization["LBL_ZONE_COLON"], safeZone, 0.8, 0.8, 0.8, 1, 1, 1)
                 end
                 if entry.cause then
                     local safeCause = GuildWeave:SanitizeText(entry.cause)

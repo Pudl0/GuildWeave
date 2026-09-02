@@ -36,6 +36,6 @@ function GuildWeave:WriteGuildInfo(mail, ah, trade, group, cap)
         or  (sep .. "\n" .. block)
 
     SetGuildInfoText(newText)
-    GuildWeave:Print("Guild info updated with new rules.")
+    GuildWeave:Print(GuildWeave.Localization["RULES_GUILD_INFO_UPDATED"])
     GuildWeave.Rules:LoadFromGuildInfo()
 end
