@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1] (2026-09-03)
+
+Changed:
+- Guild panel, officer panel, and setup wizard are bigger overall, with larger text throughout
+
+Fixed:
+- Mailbox tooltip on locked "Open All" buttons no longer throws an error when hovered
+
 ## [1.2.0] (2026-09-02)
 
 New:

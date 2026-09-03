@@ -7,17 +7,17 @@ local GP = GuildWeave.GuildPanel
 local Localization = GuildWeave.Localization
 
 GP.PANEL_NAME = "GuildWeaveGuildPanel"
-GP.ROW_H      = 16
-GP.TITLE_H    = 26
-GP.COL_H      = 16
+GP.ROW_H      = 20
+GP.TITLE_H    = 30
+GP.COL_H      = 20
 
 GP.COLUMNS = {
-    { label = Localization["LBL_NAME"],         width = 120 },
-    { label = Localization["LBL_LVL"],          width = 26  },
-    { label = Localization["PANEL_COL_RANK"],   width = 84  },
-    { label = Localization["LBL_ZONE"],         width = 90  },
-    { label = Localization["PANEL_COL_ROLE"],   width = 55  },
-    { label = Localization["PANEL_COL_DEATHS"], width = 35  },
+    { label = Localization["LBL_NAME"],         width = 132 },
+    { label = Localization["LBL_LVL"],          width = 30  },
+    { label = Localization["PANEL_COL_RANK"],   width = 92  },
+    { label = Localization["LBL_ZONE"],         width = 98  },
+    { label = Localization["PANEL_COL_ROLE"],   width = 60  },
+    { label = Localization["PANEL_COL_DEATHS"], width = 40  },
 }
 
 local ROLE_ABBREV = { Tank = "T", Heal = "H", DPS = "D" }
@@ -32,7 +32,7 @@ end
 
 GP.PAD_X   = 16
 GP.FRAME_W = 0
-GP.FRAME_H = 420
+GP.FRAME_H = 460
 
 GP.sortCol     = 0
 GP.sortAsc     = true
@@ -205,7 +205,7 @@ function GP.CreateRow(parent, index)
     row.cells = {}
     local xOff = 0
     for i, col in ipairs(GP.COLUMNS) do
-        local fs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        local fs = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         fs:SetWidth(col.width - 2)
         fs:SetHeight(GP.ROW_H)
         fs:SetPoint("LEFT", row, "LEFT", xOff + 2, 0)
@@ -261,7 +261,7 @@ function GuildWeave.GuildPanel:Create()
     titleText:SetText(GuildWeave.name)
     titleText:SetTextColor(1, 0.82, 0, 1)
 
-    local countLabel = f:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local countLabel = f:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     countLabel:SetPoint("RIGHT", titleBg, "RIGHT", -28, 0)
     countLabel:SetTextColor(0.6, 0.6, 0.6, 1)
     self.countLabel = countLabel
@@ -270,8 +270,8 @@ function GuildWeave.GuildPanel:Create()
     local divider = f:CreateTexture(nil, "ARTWORK")
     divider:SetHeight(1)
     divider:SetColorTexture(0.4, 0.4, 0.4, 0.7)
-    divider:SetPoint("TOPLEFT",  f, "TOPLEFT",   8, -45)
-    divider:SetPoint("TOPRIGHT", f, "TOPRIGHT", -8, -45)
+    divider:SetPoint("TOPLEFT",  f, "TOPLEFT",   8, -(GP.TITLE_H + 3 + GP.COL_H))
+    divider:SetPoint("TOPRIGHT", f, "TOPRIGHT", -8, -(GP.TITLE_H + 3 + GP.COL_H))
 
     local closeBtn = CreateFrame("Button", nil, f, "UIPanelCloseButton")
     closeBtn:SetSize(20, 20)
@@ -290,10 +290,10 @@ function GuildWeave.GuildPanel:Create()
 
     -- Hide-offline toggle (stateful button)
     local hideBtn = CreateFrame("Button", nil, f)
-    hideBtn:SetSize(50, GP.TITLE_H - 4)
+    hideBtn:SetSize(60, GP.TITLE_H - 4)
     hideBtn:SetPoint("RIGHT", countLabel, "LEFT", -6, 0)
     hideBtn:EnableMouse(true)
-    local hideLbl = hideBtn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local hideLbl = hideBtn:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     hideLbl:SetAllPoints()
     hideLbl:SetJustifyH("RIGHT")
     hideLbl:SetText(Localization["LBL_OFFLINE"])
@@ -315,7 +315,7 @@ function GuildWeave.GuildPanel:Create()
         btn:SetPoint("TOPLEFT", f, "TOPLEFT", xOff, -(GP.TITLE_H + 3))
         btn:EnableMouse(true)
 
-        local lbl = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        local lbl = btn:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         lbl:SetAllPoints()
         lbl:SetJustifyH(i == 2 and "CENTER" or "LEFT")
         lbl:SetTextColor(1, 0.82, 0, 1)
@@ -339,7 +339,7 @@ function GuildWeave.GuildPanel:Create()
     end
 
     local scrollFrame = CreateFrame("ScrollFrame", nil, f)
-    scrollFrame:SetPoint("TOPLEFT",     f, "TOPLEFT",      8, -48)
+    scrollFrame:SetPoint("TOPLEFT",     f, "TOPLEFT",      8, -(GP.TITLE_H + 6 + GP.COL_H))
     scrollFrame:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -8,  30)
     scrollFrame:EnableMouseWheel(true)
     scrollFrame:SetScript("OnMouseWheel", function(sf, delta)
@@ -468,13 +468,13 @@ end
 function GuildWeave.GuildPanel:CreateFilterPanel()
     if self.filterPanel then return end
     local f    = self.frame
-    local FP_W = 190
+    local FP_W = 205
     local PAD  = 10
     local INNER_W = FP_W - PAD * 2
 
     local fp = CreateFrame("Frame", "GuildWeaveGuildPanelFilter", UIParent, "BackdropTemplate")
     fp:SetFrameStrata("HIGH")
-    fp:SetSize(FP_W, 220)
+    fp:SetSize(FP_W, 230)
     fp:SetBackdrop(BACKDROP)
     fp:SetBackdropColor(0.07, 0.07, 0.07, 0.97)
     fp:SetBackdropBorderColor(0.45, 0.45, 0.45, 1)
@@ -486,13 +486,13 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
     titleLbl:SetText(Localization["LBL_FILTER"])
     titleLbl:SetTextColor(1, 0.82, 0, 1)
 
-    local nameLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local nameLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     nameLbl:SetPoint("TOPLEFT", titleLbl, "BOTTOMLEFT", 0, -10)
     nameLbl:SetText(Localization["LBL_NAME_COLON"])
     nameLbl:SetTextColor(0.8, 0.8, 0.8, 1)
 
     local nameEB = CreateFrame("EditBox", nil, fp, BackdropTemplateMixin and "BackdropTemplate")
-    nameEB:SetSize(INNER_W, 22)
+    nameEB:SetSize(INNER_W, 24)
     nameEB:SetPoint("TOPLEFT", nameLbl, "BOTTOMLEFT", 0, -4)
     nameEB:SetBackdrop(GuildWeave.Constants.POPUPBACKDROP)
     nameEB:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
@@ -507,7 +507,7 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
     end)
     nameEB:SetScript("OnEscapePressed", function(eb) eb:ClearFocus() end)
 
-    local roleLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local roleLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     roleLbl:SetPoint("TOPLEFT", nameEB, "BOTTOMLEFT", 0, -10)
     roleLbl:SetText(Localization["FILTER_ROLE"])
     roleLbl:SetTextColor(0.8, 0.8, 0.8, 1)
@@ -518,7 +518,7 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
 
     for i, roleName in ipairs(roles) do
         local btn = CreateFrame("Button", nil, fp)
-        btn:SetSize(rbW, 22)
+        btn:SetSize(rbW, 24)
         btn:SetPoint("TOPLEFT", roleLbl, "BOTTOMLEFT", (i - 1) * (rbW + 4), -4)
         btn:EnableMouse(true)
 
@@ -526,7 +526,7 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
         bg:SetAllPoints()
         bg:SetColorTexture(0.18, 0.18, 0.18, 0.9)
 
-        local lbl = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        local lbl = btn:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         lbl:SetAllPoints()
         lbl:SetJustifyH("CENTER")
         lbl:SetText(roleName)
@@ -550,13 +550,13 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
         roleBtns[i] = btn
     end
 
-    local profLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local profLbl = fp:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     profLbl:SetPoint("TOPLEFT", roleBtns[1], "BOTTOMLEFT", 0, -12)
     profLbl:SetText(Localization["FILTER_PROFESSION"])
     profLbl:SetTextColor(0.8, 0.8, 0.8, 1)
 
     local profBtn = CreateFrame("Button", nil, fp, "UIPanelButtonTemplate")
-    profBtn:SetSize(INNER_W, 22)
+    profBtn:SetSize(INNER_W, 24)
     profBtn:SetPoint("TOPLEFT", profLbl, "BOTTOMLEFT", 0, -4)
     profBtn:SetText(Localization["FILTER_ALL_PROFS"])
 
@@ -584,7 +584,7 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
         for _, b in ipairs(profList.btns) do b:Hide() end
         profList.btns = {}
 
-        local ITEM_H = 18
+        local ITEM_H = 20
         local yOff   = -4
 
         local function addItem(label, onClickFn, isActive)
@@ -592,7 +592,7 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
             btn:SetSize(INNER_W - 8, ITEM_H)
             btn:SetPoint("TOPLEFT", profList, "TOPLEFT", 4, yOff)
             btn:EnableMouse(true)
-            local lbl = btn:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            local lbl = btn:CreateFontString(nil, "OVERLAY", "GameFontNormal")
             lbl:SetAllPoints()
             lbl:SetJustifyH("LEFT")
             lbl:SetText(label)
@@ -631,7 +631,7 @@ function GuildWeave.GuildPanel:CreateFilterPanel()
     end)
 
     local resetBtn = CreateFrame("Button", nil, fp, "UIPanelButtonTemplate")
-    resetBtn:SetSize(INNER_W, 22)
+    resetBtn:SetSize(INNER_W, 24)
     resetBtn:SetPoint("TOPLEFT", profBtn, "BOTTOMLEFT", 0, -12)
     resetBtn:SetText(Localization["FILTER_RESET"])
     resetBtn:SetScript("OnClick", function()

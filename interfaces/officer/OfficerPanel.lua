@@ -8,10 +8,10 @@ GuildWeave.OfficerPanel = {}
 local OfficerPanel = GuildWeave.OfficerPanel
 local Localization = GuildWeave.Localization
 
-OfficerPanel.PANEL_W = 480
-OfficerPanel.PANEL_H = 420
-OfficerPanel.TITLE_H = 28
-OfficerPanel.TAB_H   = 24
+OfficerPanel.PANEL_W = 520
+OfficerPanel.PANEL_H = 460
+OfficerPanel.TITLE_H = 32
+OfficerPanel.TAB_H   = 26
 
 local frame
 
@@ -70,7 +70,7 @@ local function BuildRulesTab(rc)
     if not officer then capLbl:SetTextColor(0.5, 0.5, 0.5, 1) end
 
     local capEb = CreateFrame("EditBox", nil, rc, BackdropTemplateMixin and "BackdropTemplate")
-    capEb:SetSize(50, 22)
+    capEb:SetSize(56, 24)
     capEb:SetPoint("LEFT", capLbl, "RIGHT", 8, 0)
     capEb:SetBackdrop(GuildWeave.Constants.POPUPBACKDROP)
     capEb:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
@@ -85,7 +85,7 @@ local function BuildRulesTab(rc)
 
     if not officer then
         yOff = yOff - 40
-        local notice = rc:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        local notice = rc:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         notice:SetPoint("TOPLEFT", rc, "TOPLEFT", 8, yOff)
         notice:SetTextColor(0.6, 0.6, 0.6, 1)
         notice:SetText(Localization["OFFICER_VIEW_ONLY"])
@@ -93,7 +93,7 @@ local function BuildRulesTab(rc)
 
     if officer then
         local updateBtn = CreateFrame("Button", nil, rc, "UIPanelButtonTemplate")
-        updateBtn:SetSize(140, 26)
+        updateBtn:SetSize(150, 28)
         updateBtn:SetPoint("BOTTOM", rc, "BOTTOM", 0, 10)
         updateBtn:SetText(Localization["OFFICER_UPDATE_BTN"])
         updateBtn:SetScript("OnClick", function()
@@ -153,13 +153,13 @@ end
 
 local function BuildMembersTab(mc)
     local MCOLS = {
-        { label = Localization["LBL_NAME"],        x = 0,   w = 110 },
-        { label = Localization["LBL_LEVEL"],       x = 114, w = 40  },
-        { label = Localization["LBL_DISCORD"],     x = 158, w = 130 },
-        { label = Localization["LBL_PROFESSIONS"], x = 292, w = 152 },
+        { label = Localization["LBL_NAME"],        x = 0,   w = 120 },
+        { label = Localization["LBL_LEVEL"],       x = 124, w = 40  },
+        { label = Localization["LBL_DISCORD"],     x = 168, w = 140 },
+        { label = Localization["LBL_PROFESSIONS"], x = 312, w = 170 },
     }
     for _, col in ipairs(MCOLS) do
-        local hdr = mc:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        local hdr = mc:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         hdr:SetPoint("TOPLEFT", mc, "TOPLEFT", col.x + 4, -6)
         hdr:SetWidth(col.w)
         hdr:SetJustifyH("LEFT")
@@ -222,11 +222,11 @@ local function BuildMembersTab(mc)
             msg:SetText(Localization["OFFICER_MEMBERS_NONE_FOUND"])
             msg:SetTextColor(0.6, 0.6, 0.6, 1)
             table.insert(mc.rows, msg)
-            mScrollChild:SetHeight(20)
+            mScrollChild:SetHeight(24)
             return
         end
 
-        local ROW_H = 20
+        local ROW_H = 24
         for idx, entry in ipairs(list) do
             local row = CreateFrame("Frame", nil, mScrollChild)
             row:SetSize(mScrollChild:GetWidth(), ROW_H)
@@ -245,29 +245,29 @@ local function BuildMembersTab(mc)
                 end
             end)
 
-            local nameFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+            local nameFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
             nameFs:SetPoint("LEFT", row, "LEFT", 4, 0)
-            nameFs:SetWidth(106)
+            nameFs:SetWidth(116)
             nameFs:SetJustifyH("LEFT")
             nameFs:SetText(GuildWeave:SanitizeText(entry.name))
             nameFs:SetTextColor(entry.online and 0.27 or 0.5, entry.online and 1 or 0.5, entry.online and 0.27 or 0.5, 1)
 
-            local levelFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            levelFs:SetPoint("LEFT", row, "LEFT", 118, 0)
+            local levelFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+            levelFs:SetPoint("LEFT", row, "LEFT", 128, 0)
             levelFs:SetWidth(36)
             levelFs:SetJustifyH("LEFT")
             levelFs:SetText(tostring(entry.level))
 
-            local discordFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            discordFs:SetPoint("LEFT", row, "LEFT", 162, 0)
-            discordFs:SetWidth(126)
+            local discordFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+            discordFs:SetPoint("LEFT", row, "LEFT", 172, 0)
+            discordFs:SetWidth(136)
             discordFs:SetJustifyH("LEFT")
             discordFs:SetText(GuildWeave:SanitizeText(entry.discord))
             discordFs:SetTextColor(0.55, 0.55, 0.9, 1)
 
-            local profsFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-            profsFs:SetPoint("LEFT", row, "LEFT", 296, 0)
-            profsFs:SetWidth(148)
+            local profsFs = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+            profsFs:SetPoint("LEFT", row, "LEFT", 316, 0)
+            profsFs:SetWidth(166)
             profsFs:SetJustifyH("LEFT")
             profsFs:SetText(entry.profs)
             profsFs:SetTextColor(0.9, 0.75, 0.4, 1)
@@ -330,12 +330,12 @@ end
 
 local function BuildDiscordTab(dc)
     local DCOLS = {
-        { label = Localization["LBL_DISCORD"],    x = 0,   w = 150 },
-        { label = Localization["LBL_CHARS"],      x = 154, w = 42  },
-        { label = Localization["LBL_CHARACTERS"], x = 200, w = 250 },
+        { label = Localization["LBL_DISCORD"],    x = 0,   w = 165 },
+        { label = Localization["LBL_CHARS"],      x = 169, w = 46  },
+        { label = Localization["LBL_CHARACTERS"], x = 219, w = 260 },
     }
     for _, col in ipairs(DCOLS) do
-        local hdr = dc:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        local hdr = dc:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         hdr:SetPoint("TOPLEFT", dc, "TOPLEFT", col.x + 4, -6)
         hdr:SetWidth(col.w)
         hdr:SetJustifyH("LEFT")
@@ -400,11 +400,11 @@ local function BuildDiscordTab(dc)
             msg:SetText(Localization["OFFICER_DISCORD_NONE_FOUND"])
             msg:SetTextColor(0.6, 0.6, 0.6, 1)
             table.insert(dc.rows, msg)
-            dScrollChild:SetHeight(20)
+            dScrollChild:SetHeight(24)
             return
         end
 
-        local ROW_H = 20
+        local ROW_H = 24
         for idx, entry in ipairs(list) do
             local row = CreateFrame("Frame", nil, dScrollChild)
             row:SetSize(dScrollChild:GetWidth(), ROW_H)
@@ -417,7 +417,7 @@ local function BuildDiscordTab(dc)
             end
 
             local function Cell(text, xPos, w, r, g, b)
-                local fs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+                local fs = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
                 fs:SetPoint("LEFT", row, "LEFT", xPos + 4, 0)
                 fs:SetWidth(w)
                 fs:SetJustifyH("LEFT")
@@ -425,9 +425,9 @@ local function BuildDiscordTab(dc)
                 if r then fs:SetTextColor(r, g, b, 1) end
             end
 
-            Cell(GuildWeave:SanitizeText(entry.handle), 0,   146, 0.65, 0.65, 1)
-            Cell(tostring(entry.count),                 154, 38,  1,    0.82, 0)
-            Cell(GuildWeave:SanitizeText(entry.names),  200, 246)
+            Cell(GuildWeave:SanitizeText(entry.handle), 0,   161, 0.65, 0.65, 1)
+            Cell(tostring(entry.count),                 169, 42,  1,    0.82, 0)
+            Cell(GuildWeave:SanitizeText(entry.names),  219, 256)
 
             table.insert(dc.rows, row)
         end
@@ -473,7 +473,7 @@ local function BuildPanel()
     titleBg:SetColorTexture(0.12, 0.12, 0.12, 1)
 
     local titleIcon = f:CreateTexture(nil, "OVERLAY")
-    titleIcon:SetSize(18, 18)
+    titleIcon:SetSize(20, 20)
     titleIcon:SetPoint("LEFT", titleBg, "LEFT", 6, 0)
     titleIcon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
 

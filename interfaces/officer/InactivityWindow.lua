@@ -5,21 +5,21 @@ local Localization = GuildWeave.Localization
 
 local function BuildInactiveTab(content)
     local ICOLS = {
-        { label = Localization["LBL_NAME"],             x = 0,   w = 110 },
-        { label = Localization["LBL_LEVEL"],            x = 114, w = 40  },
-        { label = Localization["INACTIVE_COL_RANK"],    x = 158, w = 110 },
-        { label = Localization["INACTIVE_COL_OFFLINE"], x = 272, w = 80  },
+        { label = Localization["LBL_NAME"],             x = 0,   w = 120 },
+        { label = Localization["LBL_LEVEL"],            x = 124, w = 42  },
+        { label = Localization["INACTIVE_COL_RANK"],    x = 170, w = 120 },
+        { label = Localization["INACTIVE_COL_OFFLINE"], x = 294, w = 86  },
     }
     for _, col in ipairs(ICOLS) do
-        local hdr = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
-        hdr:SetPoint("TOPLEFT", content, "TOPLEFT", col.x + 4, -20)
+        local hdr = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        hdr:SetPoint("TOPLEFT", content, "TOPLEFT", col.x + 4, -22)
         hdr:SetWidth(col.w)
         hdr:SetJustifyH("LEFT")
         hdr:SetText(col.label)
         hdr:SetTextColor(1, 0.82, 0, 1)
     end
 
-    local threshold = content:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    local threshold = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     threshold:SetPoint("TOPLEFT", content, "TOPLEFT", 4, -4)
     threshold:SetTextColor(0.6, 0.6, 0.6, 1)
     threshold:SetText(string.format(Localization["INACTIVE_HEADER"], GuildWeave.Constants.INACTIVE_DAYS_THRESHOLD))
@@ -27,11 +27,11 @@ local function BuildInactiveTab(content)
     local div = content:CreateTexture(nil, "ARTWORK")
     div:SetHeight(1)
     div:SetColorTexture(0.4, 0.4, 0.4, 0.7)
-    div:SetPoint("TOPLEFT",  content, "TOPLEFT",  4, -36)
-    div:SetPoint("TOPRIGHT", content, "TOPRIGHT", -4, -36)
+    div:SetPoint("TOPLEFT",  content, "TOPLEFT",  4, -40)
+    div:SetPoint("TOPRIGHT", content, "TOPRIGHT", -4, -40)
 
     local scrollFrame = CreateFrame("ScrollFrame", nil, content, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT",     content, "TOPLEFT",     4, -40)
+    scrollFrame:SetPoint("TOPLEFT",     content, "TOPLEFT",     4, -44)
     scrollFrame:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -20, 8)
     scrollFrame:EnableMouseWheel(true)
     scrollFrame:SetScript("OnMouseWheel", function(sf, delta)
@@ -94,7 +94,7 @@ local function BuildInactiveTab(content)
             return
         end
 
-        local ROW_H = 20
+        local ROW_H = 24
         for idx, m in ipairs(members) do
             local row = CreateFrame("Frame", nil, scrollChild)
             row:SetSize(scrollChild:GetWidth(), ROW_H)
@@ -107,7 +107,7 @@ local function BuildInactiveTab(content)
             end
 
             local function Cell(text, xPos, w)
-                local fs = row:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+                local fs = row:CreateFontString(nil, "OVERLAY", "GameFontNormal")
                 fs:SetPoint("LEFT", row, "LEFT", xPos + 4, 0)
                 fs:SetWidth(w)
                 fs:SetJustifyH("LEFT")
@@ -115,15 +115,15 @@ local function BuildInactiveTab(content)
                 return fs
             end
 
-            Cell(GuildWeave:SanitizeText(m.name), 0,   106)
-            Cell(tostring(m.level),               114, 36)
-            Cell(GuildWeave:SanitizeText(m.rank),  158, 106)
-            Cell(m.displayDuration,                272, 76)
+            Cell(GuildWeave:SanitizeText(m.name), 0,   116)
+            Cell(tostring(m.level),               124, 38)
+            Cell(GuildWeave:SanitizeText(m.rank),  170, 116)
+            Cell(m.displayDuration,                294, 82)
 
             if CanGuildRemove() then
                 local kick = CreateFrame("Button", nil, row, "UIPanelButtonTemplate")
-                kick:SetSize(64, ROW_H - 2)
-                kick:SetPoint("LEFT", row, "LEFT", 356, 0)
+                kick:SetSize(70, ROW_H - 2)
+                kick:SetPoint("LEFT", row, "LEFT", 384, 0)
                 kick:SetText(Localization["INACTIVE_REMOVE_BTN"])
                 kick:SetScript("OnClick", function()
                     if not CanGuildRemove() then

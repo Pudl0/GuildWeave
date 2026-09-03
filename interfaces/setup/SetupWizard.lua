@@ -8,10 +8,10 @@ local Localization = GuildWeave.Localization
 
 -- ── Helpers ──────────────────────────────────────────────────────────────────
 
-local FRAME_W = 460
-local FRAME_H = 420   -- fallback height; each step sets its own via step.frameH
-local DOT_SIZE    = 12
-local DOT_SPACING = 20
+local FRAME_W = 500
+local FRAME_H = 460   -- fallback height; each step sets its own via step.frameH
+local DOT_SIZE    = 14
+local DOT_SPACING = 22
 
 -- Orphaned content widgets are reparented here so they stop rendering
 -- (SetParent(nil) can crash in some Classic builds).
@@ -105,7 +105,7 @@ end
 -- ── Frame construction ───────────────────────────────────────────────────────
 
 local function BuildFrame()
-    local TITLE_H = 22
+    local TITLE_H = 26
 
     local frame = CreateFrame("Frame", "GuildWeaveSetupWizard", UIParent, "BackdropTemplate")
     frame:SetSize(FRAME_W, FRAME_H)
@@ -130,7 +130,7 @@ local function BuildFrame()
     titleBg:SetColorTexture(0.12, 0.12, 0.12, 1)
 
     local titleIcon = frame:CreateTexture(nil, "OVERLAY")
-    titleIcon:SetSize(18, 18)
+    titleIcon:SetSize(20, 20)
     titleIcon:SetPoint("LEFT", titleBg, "LEFT", 6, 0)
     titleIcon:SetTexture(GuildWeave.Constants.MEDIA.GUILD_LOGO)
 
@@ -142,7 +142,7 @@ local function BuildFrame()
     -- Progress dots (max 5) — small colored squares, resized/coloured in UpdateProgress
     local dotContainer = CreateFrame("Frame", nil, frame)
     dotContainer:SetSize(DOT_SPACING * 5, DOT_SIZE)
-    dotContainer:SetPoint("TOP", frame, "TOP", 0, -44)
+    dotContainer:SetPoint("TOP", frame, "TOP", 0, -48)
     frame.dotContainer = dotContainer
     frame.dots = {}
     for i = 1, 5 do
@@ -153,7 +153,7 @@ local function BuildFrame()
         frame.dots[i] = dot
     end
 
-    frame.stepLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+    frame.stepLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     frame.stepLabel:SetPoint("TOP", dotContainer, "BOTTOM", 0, -4)
     frame.stepLabel:SetTextColor(0.7, 0.7, 0.7, 1)
 
@@ -166,17 +166,17 @@ local function BuildFrame()
     local divBot = frame:CreateTexture(nil, "ARTWORK")
     divBot:SetSize(FRAME_W - 40, 1)
     divBot:SetColorTexture(0.3, 0.3, 0.3, 0.8)
-    divBot:SetPoint("BOTTOM", frame, "BOTTOM", 0, 52)
+    divBot:SetPoint("BOTTOM", frame, "BOTTOM", 0, 56)
 
     frame.backBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-    frame.backBtn:SetSize(90, 26)
-    frame.backBtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 20, 16)
+    frame.backBtn:SetSize(100, 28)
+    frame.backBtn:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 20, 18)
     frame.backBtn:SetText(Localization["WIZARD_BTN_BACK"])
     frame.backBtn:SetScript("OnClick", function() PrevStep(frame) end)
 
     frame.nextBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-    frame.nextBtn:SetSize(90, 26)
-    frame.nextBtn:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -20, 16)
+    frame.nextBtn:SetSize(100, 28)
+    frame.nextBtn:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -20, 18)
     frame.nextBtn:SetText(Localization["WIZARD_BTN_NEXT"])
     frame.nextBtn:SetScript("OnClick", function() NextStep(frame) end)
 
@@ -198,7 +198,7 @@ local function RenderDiscord(frame)
     TrackChild(frame, lbl)
 
     local eb = CreateFrame("EditBox", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
-    eb:SetSize(FRAME_W - 140, 28)
+    eb:SetSize(FRAME_W - 140, 32)
     eb:SetPoint("TOP", lbl, "BOTTOM", 0, -14)
     eb:SetBackdrop(GuildWeave.Constants.POPUPBACKDROP)
     eb:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
@@ -238,7 +238,7 @@ local function RenderPronouns(frame)
     TrackChild(frame, lbl)
 
     local eb = CreateFrame("EditBox", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
-    eb:SetSize(FRAME_W - 140, 28)
+    eb:SetSize(FRAME_W - 140, 32)
     eb:SetPoint("TOP", lbl, "BOTTOM", 0, -14)
     eb:SetBackdrop(GuildWeave.Constants.POPUPBACKDROP)
     eb:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
@@ -274,7 +274,7 @@ local function RenderRole(frame)
     TrackChild(frame, lbl)
 
     local roles = GuildWeave.Constants.ROLES
-    local btnW   = 90
+    local btnW   = 100
     local totalW = btnW * #roles + 10 * (#roles - 1)
     local startX = -(totalW / 2) + btnW / 2
 
@@ -298,7 +298,7 @@ local function RenderRole(frame)
 
     for i, roleName in ipairs(roles) do
         local btn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-        btn:SetSize(btnW, 30)
+        btn:SetSize(btnW, 32)
         btn:SetPoint("TOP", lbl, "BOTTOM", startX + (i - 1) * (btnW + 10), -20)
         btn:SetText(roleName)
         TrackChild(frame, btn)
@@ -346,26 +346,26 @@ local function RenderProfessions(frame)
 
     local detected = GuildWeave.GuildProfiles:DetectProfessions()
     frame._profFields = {}
-    local SKILL_X = 240
+    local SKILL_X = 260
 
     for slot = 1, 2 do
         local d = detected[slot]
-        local yOff = -20 - (slot - 1) * 68
+        local yOff = -20 - (slot - 1) * 76
 
-        local nameLbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        local nameLbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         nameLbl:SetPoint("TOPLEFT", lbl, "BOTTOMLEFT", 0, yOff)
         nameLbl:SetText(string.format(Localization["WIZARD_PROF_LABEL"], slot))
         nameLbl:SetTextColor(0.8, 0.8, 0.8, 1)
         TrackChild(frame, nameLbl)
 
-        local skillLbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+        local skillLbl = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
         skillLbl:SetPoint("TOPLEFT", lbl, "BOTTOMLEFT", SKILL_X, yOff)
         skillLbl:SetText(Localization["LBL_SKILL_COLON"])
         skillLbl:SetTextColor(0.8, 0.8, 0.8, 1)
         TrackChild(frame, skillLbl)
 
         local nameEb = CreateFrame("EditBox", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
-        nameEb:SetSize(225, 24)
+        nameEb:SetSize(240, 26)
         nameEb:SetPoint("TOPLEFT", nameLbl, "BOTTOMLEFT", 0, -4)
         nameEb:SetBackdrop(GuildWeave.Constants.POPUPBACKDROP)
         nameEb:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
@@ -379,7 +379,7 @@ local function RenderProfessions(frame)
         TrackChild(frame, nameEb)
 
         local skillEb = CreateFrame("EditBox", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
-        skillEb:SetSize(100, 24)
+        skillEb:SetSize(110, 26)
         skillEb:SetPoint("TOPLEFT", skillLbl, "BOTTOMLEFT", 0, -4)
         skillEb:SetBackdrop(GuildWeave.Constants.POPUPBACKDROP)
         skillEb:SetBackdropColor(0.1, 0.1, 0.1, 0.9)
@@ -400,7 +400,7 @@ local function RenderProfessions(frame)
     end
 
     local skipBtn = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-    skipBtn:SetSize(130, 26)
+    skipBtn:SetSize(140, 28)
     skipBtn:SetPoint("TOP", frame._profFields[2].nameEb, "BOTTOM", 0, -16)
     skipBtn:SetText(Localization["WIZARD_PROF_SKIP"])
     skipBtn:SetScript("OnClick", function()
@@ -432,17 +432,17 @@ function GuildWeave:BuildWizardSteps(forceAll)
     steps = {}
 
     if forceAll or not DiscordHandle or DiscordHandle == "" then
-        table.insert(steps, { id = "discord",     render = RenderDiscord,     onNext = OnNextDiscord,     frameH = 250 })
+        table.insert(steps, { id = "discord",     render = RenderDiscord,     onNext = OnNextDiscord,     frameH = 270 })
     end
     if forceAll or Pronouns == nil then
-        table.insert(steps, { id = "pronouns",    render = RenderPronouns,    onNext = OnNextPronouns,    frameH = 250 })
+        table.insert(steps, { id = "pronouns",    render = RenderPronouns,    onNext = OnNextPronouns,    frameH = 270 })
     end
     if forceAll or not GuildWeaveOwnProfile or not GuildWeaveOwnProfile.role then
-        table.insert(steps, { id = "role",        render = RenderRole,        onNext = OnNextRole,        frameH = 250 })
+        table.insert(steps, { id = "role",        render = RenderRole,        onNext = OnNextRole,        frameH = 270 })
     end
     if forceAll or (not (GuildWeaveOwnProfile and GuildWeaveOwnProfile.skipProfessions)
         and (not GuildWeaveOwnProfile or not GuildWeaveOwnProfile.prof1)) then
-        table.insert(steps, { id = "professions", render = RenderProfessions, onNext = OnNextProfessions, frameH = 355 })
+        table.insert(steps, { id = "professions", render = RenderProfessions, onNext = OnNextProfessions, frameH = 390 })
     end
 end
 
